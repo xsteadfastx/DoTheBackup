@@ -1,7 +1,7 @@
 DoTheBackup
 ===========
 
-Backups files in a directory names after the backup day. It tries to use hardlinks from the day before to reduce space. you also can use a list of files as input. 
+Backups files in a directory names after the backup day. It tries to use hardlinks from the day before to reduce space. You can also use a list of dirs as input. 
 
 ```
 Usage:
