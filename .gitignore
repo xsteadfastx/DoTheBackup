@@ -34,3 +34,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# OWN STUFF
+.ropeproject
+venv
+DoTheBackup.yaml
+DoTheBackup-cron.sh.dist
