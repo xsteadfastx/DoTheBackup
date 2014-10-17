@@ -12,16 +12,18 @@ import subprocess
 from docopt import docopt
 
 
+# gettings the arguments from docopt
 ARGUMENTS = docopt(__doc__)
 
+# define some times
 NOW = arrow.utcnow()
 TODAY = NOW.format('DD')
 YESTERDAY = NOW.replace(days=-1).format('DD')
 
 
 def rsync_cmd(config):
-    source = os.path.abspath(os.path.normpath(config['source'])) + '/'
-    destination = os.path.abspath(os.path.normpath(config['destination']))
+    source = os.path.normpath(config['source']) + '/'
+    destination = os.path.normpath(config['destination'])
 
     # adding basic rsync stuff
     cmd = ['rsync', '-av', '--delete']
@@ -36,8 +38,10 @@ def rsync_cmd(config):
 
     # do magic of type is month
     if config['type'] == 'month':
+        # for dealing with ssh source and destination:
+        # the destination needs to be splitted to get the path
         cmd.append('--link-dest={}'.format(
-            os.path.join(destination, YESTERDAY)))
+            os.path.join(destination.split(':')[-1], YESTERDAY)))
         destination = os.path.join(destination, TODAY)
     elif config['type'] == 'once':
         pass
@@ -57,14 +61,6 @@ def from_file():
 
     # work through config file
     for scalar, sequence in config['backup'].viewitems():
-        # get destination out of config
-        destination = os.path.abspath(
-            os.path.normpath(sequence['destination']))
-
-        # create backup dir if not there
-        if not os.path.exists(destination):
-            os.makedirs(destination)
-
         # create process
         proc = subprocess.Popen(rsync_cmd(sequence),
                                 stdout=subprocess.PIPE,
