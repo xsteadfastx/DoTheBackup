@@ -8,10 +8,13 @@ a little python script for handling my backups. if `type: month` its using hardl
 
 ```
 Usage:
-    DoTheBackup.py (-f <config> | --file <config>)
+    DoTheBackup.py (-f <config> | --file <config>) [--verbose]
+    DoTheBackup.py -h | --help
 
 Options:
-    -f --file        Reads config from YAML File
+    -h --help        Show this screen.
+    -f --file        Reads config from YAML File.
+    -v --verbose     Prints the created commands used.
 ```
 
 ## config
@@ -23,7 +26,8 @@ backup:
         my_documents:
                 # "month" means that it will save the backup in daily directories
                 # for example: "/media/backup/documents/07"
-                type: month
+                type: rsync_month
+		enabled: true
                 source: /home/user/documents
                 destination: /media/backup/documents
                 # rsync --exclude patterns here
@@ -36,15 +40,41 @@ backup:
         video:
                 # "once" backups straight in the destination directory
                 # for example: "/media/backup/Videos"
-                type: once
+                type: rsync_once
+		enabled: true
                 source: /home/user/Media/Videos
                 destination: /media/backup/Videos
         important_stuff:
                 # you can backup to and from an ssh host
-                type: month
+                type: rsync_month
+		enabled: true
                 source: /home/user/important_stuff
                 destination: user@host:/media/backup/important_stuff
+	mydb:
+		type: git_mysql
+		enabled: true
+		user: mymysqluser
+		password: mypassword
+		db_name: nameofthedb
+		destination: /media/backup/mydb
+		# name of the remote git pushes to
+		remote_name: mygitbox
 ```
+
+## type
+### rsync_once
+saves `source` to `destination`. it even works over ssh.
+
+### rsync_month
+saves `source` to `destination/TODAY` and tries to use hardlinks from `YESTERDAY` to save space.
+
+### git_mysql
+creates mysqldump and adds it to a git repo. it also can push the changes to a remote repo.
+
+1. `mkdir destination`
+2. `cd destination && git init`
+3. create remote bare repo with `mkdir destination && cd destination && git init --bare`
+4. on the local repo do `git remote add user@foobar.com:/home/user/destination`
 
 ## install
 for example in /opt

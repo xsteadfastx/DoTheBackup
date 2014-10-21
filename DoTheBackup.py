@@ -1,9 +1,12 @@
 '''
 Usage:
-    DoTheBackup.py (-f <config> | --file <config>)
+    DoTheBackup.py (-f <config> | --file <config>) [--verbose]
+    DoTheBackup.py -h | --help
 
 Options:
-    -f --file        Reads config from YAML File
+    -h --help        Show this screen.
+    -f --file        Reads config from YAML File.
+    -v --verbose     Prints the created commands used.
 '''
 import arrow
 import yaml
@@ -12,79 +15,165 @@ import subprocess
 from docopt import docopt
 
 
-# gettings the arguments from docopt
-ARGUMENTS = docopt(__doc__)
-
-# define some times
 NOW = arrow.utcnow()
 TODAY = NOW.format('DD')
 YESTERDAY = NOW.replace(days=-1).format('DD')
 
 
-def rsync_cmd(config):
-    source = os.path.normpath(config['source']) + '/'
-    destination = os.path.normpath(config['destination'])
+class CreateCmds(object):
+    def __init__(self, config):
+        self.config = config
+        # list commands
+        self.cmds = []
 
-    # adding basic rsync stuff
-    cmd = ['rsync', '-av', '--delete']
+    def cmd_list(self):
+        ''' returns list of commands '''
+        # rsync
+        if self.config['type'] == 'rsync_month' or \
+           self.config['type'] == 'rsync_once':
+            self._rsync_month_once()
+            return self.cmds
 
-    # check for exclude and include and add it to the rsync cmd list
-    if 'exclude' in config:
-        for sequence in config['exclude']:
-            cmd.append('--exclude={}'.format(sequence))
-    if 'include' in config:
-        for sequence in config['include']:
-            cmd.append('--include={}'.format(sequence))
+        # git mysql
+        elif self.config['type'] == 'git_mysql':
+            self._git_mysql()
+            return self.cmds
 
-    # do magic of type is month
-    if config['type'] == 'month':
-        # for dealing with ssh source and destination:
-        # the destination needs to be splitted to get the path
-        cmd.append('--link-dest={}'.format(
-            os.path.join(destination.split(':')[-1], YESTERDAY)))
-        destination = os.path.join(destination, TODAY)
-    elif config['type'] == 'once':
-        pass
+    def _create_git_cmds(self):
+        # adds db dump to git
+        self.cmds.append(['cd {} &&'.format(self.config['destination']),
+                          'git',
+                          'add',
+                          '{}.sql'.format(self.config['db_name'])])
 
-    # adding source and destination to the rsync cmd list
-    cmd.append(source)
-    cmd.append(destination)
+        # commit changes
+        self.cmds.append(['cd {} &&'.format(self.config['destination']),
+                          'git',
+                          'commit',
+                          '-m',
+                          '"daily backup"'])
 
-    # returns complete cmd list
-    return cmd
+        # if remote_name then create also a push command
+        if self.config['remote_name']:
+            self.cmds.append(['cd {} &&'.format(self.config['destination']),
+                              'git',
+                              'push',
+                              self.config['remote_name'],
+                              'master'])
+
+    def _rsync_month_once(self):
+        source = os.path.normpath(self.config['source']) + '/'
+        destination = os.path.normpath(self.config['destination'])
+
+        # adding basic rsync stuff
+        cmd = ['rsync', '-av', '--delete']
+
+        # check for exclude and include and add it to the rsync cmd list
+        if 'exclude' in self.config:
+            for sequence in self.config['exclude']:
+                cmd.append('--exclude={}'.format(sequence))
+        if 'include' in self.config:
+            for sequence in self.config['include']:
+                cmd.append('--include={}'.format(sequence))
+
+        # do magic of type is month
+        if self.config['type'] == 'rsync_month':
+            # if using days you have to specify link-dest
+            cmd.append('--link-dest=../{}'.format(YESTERDAY))
+            destination = os.path.join(destination, TODAY)
+        elif self.config['type'] == 'rsync_once':
+            pass
+
+        # adding source and destination to the rsync cmd list
+        cmd.append(source)
+        cmd.append(destination)
+
+        # returns complete cmd list
+        self.cmds.append(cmd)
+
+    def _git_mysql(self):
+        user = self.config['user']
+        password = self.config['password']
+        db_name = self.config['db_name']
+        destination = os.path.normpath(self.config['destination'])
+        output_file = os.path.join(
+            destination, '{}.sql'.format(db_name))
+
+        # add mysqldump stuff
+        self.cmds.append(['mysqldump',
+                          '-u{}'.format(user),
+                          '-p{}'.format(password),
+                          '--skip-extended-insert',
+                          db_name,
+                          '>',
+                          output_file])
+
+        self._create_git_cmds()
 
 
-def from_file():
-    # load config file
-    with open(ARGUMENTS['<config>']) as f:
+def from_file(arguments):
+    # reading config from file
+    with open(arguments['<config>'], 'r') as f:
         config = yaml.load(f)
 
     # work through config file
     for scalar, sequence in config['backup'].viewitems():
-        # create process
-        proc = subprocess.Popen(rsync_cmd(sequence),
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT)
+        # check if enabled
+        if sequence['enabled']:
+            # create list for returncodes
+            returncodes = []
 
-        # get abspath of log_dir
-        log_dir = os.path.abspath(os.path.normpath(config['log_dir']))
+            cmds_object = CreateCmds(sequence)
+            cmd_list = cmds_object.cmd_list()
 
-        # create log_dir if not there
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
+            # run through cmds
+            first_cmd = True
+            for cmd in cmd_list:
+                cmd = ' '.join(cmd)
 
-        # write logfile
-        with open(os.path.join(log_dir, '{}.log'.format(scalar)), 'w') as f:
-            for line in proc.stdout:
-                f.write(line)
-            proc.wait()
-            f.write('Exit Code: {}'.format(str(proc.returncode)))
+                # define mode to open file. its different on the first run
+                if first_cmd:
+                    open_mode = 'w'
+                    first_cmd = False
+                else:
+                    open_mode = 'a'
 
+                # create process
+                if arguments['--verbose']:
+                    print cmd
 
-def main():
-    if '--file' or '-f' in ARGUMENTS:
-        from_file()
+                proc = subprocess.Popen(cmd,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT,
+                                        shell=True)
+
+                # get abspath of log_dir
+                log_dir = os.path.abspath(os.path.normpath(config['log_dir']))
+
+                # write logfile
+                with open(
+                    os.path.join(log_dir,
+                                 '{}.log'.format(scalar)), open_mode) as f:
+                    for line in proc.stdout:
+                        f.write(line)
+                    proc.wait()
+
+                # store returncode
+                returncodes.append(proc.returncode)
+
+            # write exit code
+            code = 0
+            for exitcode in returncodes:
+                if exitcode != 0:
+                    code = 1
+
+            with open(
+                os.path.join(log_dir,
+                             '{}.log'.format(scalar)), 'a') as f:
+                f.write('Exit Code: {}'.format(code))
 
 
 if __name__ == '__main__':
-    main()
+    arguments = docopt(__doc__)
+    if arguments['--file']:
+        from_file(arguments)
