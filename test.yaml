@@ -1,0 +1,12 @@
+log_dir: tmp-test/logs 
+backup:
+        test-rsync-month:
+                type: rsync_month
+                enabled: true
+                source: tmp-test/backup/rsync-month-source
+                destination: tmp-test/backup/rsync-month-destination
+        test-rsync-once:
+                type: rsync_once
+                enabled: true
+                source: tmp-test/backup/rsync-once-source
+                destination: tmp-test/backup/rsync-once-destination
