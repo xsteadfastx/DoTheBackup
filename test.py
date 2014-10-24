@@ -120,12 +120,14 @@ class TestDoTheBackup(unittest.TestCase):
 
                 # create inode list for the today backup dir
                 today_dir = os.path.join(destination, self.today)
-                today_filelist = [os.path.join(today_dir, f) for f in os.listdir(today_dir)]
+                today_filelist = [os.path.join(today_dir, f) for f
+                                  in os.listdir(today_dir)]
                 today_inodes = self.inode_list(today_filelist)
 
                 # create inode list for the yesterday backup dir
                 yesterday_dir = os.path.join(destination, self.yesterday)
-                yesterday_filelist = [os.path.join(yesterday_dir, f) for f in os.listdir(yesterday_dir)]
+                yesterday_filelist = [os.path.join(yesterday_dir, f) for f
+                                      in os.listdir(yesterday_dir)]
                 yesterday_inodes = self.inode_list(yesterday_filelist)
 
                 self.assertEqual(today_inodes, yesterday_inodes)
