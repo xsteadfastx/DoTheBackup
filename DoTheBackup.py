@@ -117,7 +117,7 @@ def from_file(arguments):
         config = yaml.load(f)
 
     # work through config file
-    for scalar, sequence in config['backup'].viewitems():
+    for scalar, sequence in config['backup'].items():
         # check if enabled
         if sequence['enabled']:
             # create list for returncodes
@@ -140,7 +140,7 @@ def from_file(arguments):
 
                 # create process
                 if arguments['--verbose']:
-                    print cmd
+                    print(cmd)
 
                 proc = subprocess.Popen(cmd,
                                         stdout=subprocess.PIPE,
@@ -155,7 +155,7 @@ def from_file(arguments):
                     os.path.join(log_dir,
                                  '{}.log'.format(scalar)), open_mode) as f:
                     for line in proc.stdout:
-                        f.write(line)
+                        f.write(line.decode('utf-8'))
                     proc.wait()
 
                 # store returncode

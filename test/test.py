@@ -3,7 +3,7 @@ import unittest
 import os
 import yaml
 import shutil
-from uuid import uuid4
+import tempfile
 from DoTheBackup import from_file
 
 
@@ -21,7 +21,7 @@ class TestDoTheBackup(unittest.TestCase):
 
     def setUp(self):
         # create some variables
-        self.test_dir = os.path.dirname(os.path.abspath(__file__))
+        self.test_dir = tempfile.mkdtemp()
 
         self.now = arrow.utcnow()
         self.today = self.now.format('DD')
@@ -31,26 +31,26 @@ class TestDoTheBackup(unittest.TestCase):
         test_data = {
             'log_dir': os.path.join(
                 self.test_dir,
-                'tmp-test/logs'),
+                'logs'),
             'backup': {
                 'test-rsync-month': {
                     'type': 'rsync_month',
                     'enabled': 'true',
                     'source': os.path.join(
                         self.test_dir,
-                        'tmp-test/backup/rsync-month-source'),
+                        'backup/rsync-month-source'),
                     'destination': os.path.join(
                         self.test_dir,
-                        'tmp-test/backup/rsync-month-destination')},
+                        'backup/rsync-month-destination')},
                 'test-rsync-once': {
                     'type': 'rsync_once',
                     'enabled': 'true',
                     'source': os.path.join(
                         self.test_dir,
-                        'tmp-test/backup/rsync-once-source'),
+                        'backup/rsync-once-source'),
                     'destination': os.path.join(
                         self.test_dir,
-                        'tmp-test/backup/rsync-once-destination')}}}
+                        'backup/rsync-once-destination')}}}
 
         # save yaml
         with open(os.path.join(self.test_dir, 'test.yaml'), 'w') as f:
@@ -63,13 +63,12 @@ class TestDoTheBackup(unittest.TestCase):
         # create dirs and fake files
         os.makedirs(self.config['log_dir'])
 
-        for scalar, sequence in self.config['backup'].viewitems():
+        for scalar, sequence in self.config['backup'].items():
             os.makedirs(sequence['source'])
             for i in range(10):
-                uuid = str(uuid4())
-                with open(os.path.join(sequence['source'], uuid),
-                          'w') as f:
-                    f.write(uuid)
+                with tempfile.NamedTemporaryFile(mode='w',
+                                                 dir=sequence['source']) as f:
+                    f.write('THIS IS A TEST!')
 
             os.makedirs(sequence['destination'])
 
@@ -87,13 +86,11 @@ class TestDoTheBackup(unittest.TestCase):
             'test.yaml'))
 
         # delete tmp test folders
-        shutil.rmtree(os.path.join(
-            self.test_dir,
-            'tmp-test'))
+        shutil.rmtree(self.test_dir)
 
     def test_file_list(self):
         ''' test if source filelist is equal to destination filelist '''
-        for scalar, sequence in self.config['backup'].viewitems():
+        for scalar, sequence in self.config['backup'].items():
             source_filelist = os.listdir(sequence['source'])
             if sequence['type'] == 'rsync_month':
                 destination_filelist = os.listdir(
@@ -106,7 +103,7 @@ class TestDoTheBackup(unittest.TestCase):
 
     def test_inodes(self):
         ''' check if the inodes are the same if rsync_month is used '''
-        for scalar, sequence in self.config['backup'].viewitems():
+        for scalar, sequence in self.config['backup'].items():
             if sequence['type'] == 'rsync_month':
                 destination = sequence['destination']
 

@@ -1,0 +1,20 @@
+language: python
+branches:
+        only: master
+matrix:
+        include:
+                - python: 2.7
+                  env: {TOX_ENV: py27, COVERAGE: 1}
+                - python: 3.4
+                  env: {TOX_ENV: py34}
+                - python: pypy
+                  env: {TOX_ENV: pypy} 
+                - python: 2.7
+                  env: {TOX_ENV: flake8}
+install:
+        - travis_retry sudo apt-get update
+        - travis_retry pip install tox
+        - "[ ! -z $COVERAGE ] && travis_retry pip install coveralls || true"
+script: tox -e $TOX_ENV
+after_success:
+        - "[ ! -z $COVERAGE ] && coveralls || true"

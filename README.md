@@ -1,6 +1,9 @@
 DoTheBackup
 ===========
 
+[![Build Status](https://travis-ci.org/xsteadfastx/DoTheBackup.svg?branch=master)](https://travis-ci.org/xsteadfastx/DoTheBackup)
+[![Coverage Status](https://img.shields.io/coveralls/xsteadfastx/DoTheBackup.svg)](https://coveralls.io/r/xsteadfastx/DoTheBackup?branch=master)
+
 a little python script for handling my backups. if `type: month` its using hardlinks between days to save diskspace.
 
 ## usage
