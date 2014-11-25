@@ -13,6 +13,7 @@ matrix:
                   env: {TOX_ENV: flake8}
 install:
         - travis_retry sudo apt-get update
+        - travis_retry sudo apt-get install rsync 
         - travis_retry pip install tox
         - "[ ! -z $COVERAGE ] && travis_retry pip install coveralls || true"
 script: tox -e $TOX_ENV
