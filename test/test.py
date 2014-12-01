@@ -9,6 +9,7 @@ from DoTheBackup import from_file
 
 
 class TestRsync(unittest.TestCase):
+
     @staticmethod
     def create_config(test_dir):
         return {
@@ -24,7 +25,9 @@ class TestRsync(unittest.TestCase):
                         'backup/rsync-month-source'),
                     'destination': os.path.join(
                         test_dir,
-                        'backup/rsync-month-destination')},
+                        'backup/rsync-month-destination'),
+                    'exclude': ['exclude_this', 'exclude_that'],
+                    'include': ['include_this', 'include_that']},
                 'test-rsync-once': {
                     'type': 'rsync_once',
                     'enabled': 'true',
@@ -33,7 +36,9 @@ class TestRsync(unittest.TestCase):
                         'backup/rsync-once-source'),
                     'destination': os.path.join(
                         test_dir,
-                        'backup/rsync-once-destination')}}}
+                        'backup/rsync-once-destination'),
+                    'exclude': ['exclude_this', 'exclude_that'],
+                    'include': ['include_this', 'include_that']}}}
 
     @staticmethod
     def inode_list(filelist):
@@ -81,9 +86,6 @@ class TestRsync(unittest.TestCase):
         self.arguments['<config>'] = os.path.join(self.test_dir, 'test.yaml')
         self.arguments['--verbose'] = False
 
-        # run from_file to do the backup magic
-        from_file(self.arguments)
-
     def tearDown(self):
         # delete test.yaml
         os.remove(os.path.join(
@@ -95,6 +97,9 @@ class TestRsync(unittest.TestCase):
 
     def test_file_list(self):
         ''' source filelist is equal to destination filelist '''
+        # run DoTheBackup
+        from_file(self.arguments)
+
         for scalar, sequence in self.config['backup'].items():
             source_filelist = os.listdir(sequence['source'])
             if sequence['type'] == 'rsync_month':
@@ -108,6 +113,9 @@ class TestRsync(unittest.TestCase):
 
     def test_inodes(self):
         ''' inodes are the same if rsync_month is used '''
+        # run DoTheBackup
+        from_file(self.arguments)
+
         for scalar, sequence in self.config['backup'].items():
             if sequence['type'] == 'rsync_month':
                 destination = sequence['destination']
@@ -134,8 +142,45 @@ class TestRsync(unittest.TestCase):
 
                 self.assertEqual(today_inodes, yesterday_inodes)
 
+    @mock.patch('DoTheBackup.subprocess')
+    def test_subprocess_called_with(self, subprocess):
+        ''' subprocess arguments are as expected '''
+        # mock stuff
+        subprocess.Popen.return_value.returncode = 0
+
+        # run DoTheBackup
+        from_file(self.arguments)
+
+        # testing if subprocess.Popen got called 2 times
+        self.assertEqual(subprocess.Popen.call_count, 2)
+
+        # getting subprocess calls
+        calls = subprocess.Popen.call_args_list
+
+        # list of awaited responses
+        response_list = ['rsync -av --delete \
+--exclude=exclude_this --exclude=exclude_that \
+--include=include_this --include=include_that --link-dest=../{} \
+{}/backup/rsync-month-source/ \
+{}/backup/rsync-month-destination/{}'.format(self.yesterday,
+                                             self.test_dir,
+                                             self.test_dir,
+                                             self.today),
+                         'rsync -av --delete \
+--exclude=exclude_this --exclude=exclude_that \
+--include=include_this --include=include_that \
+{}/backup/rsync-once-source/ \
+{}/backup/rsync-once-destination'.format(self.test_dir,
+                                         self.test_dir)]
+
+        # checking every call argument with its awaited response
+        for call, response in zip(calls, response_list):
+            call_args, call_kwargs = call
+            self.assertEqual(call_args[0], response)
+
 
 class TestGitMySQL(unittest.TestCase):
+
     @staticmethod
     def create_config(test_dir):
         return {
@@ -194,13 +239,13 @@ class TestGitMySQL(unittest.TestCase):
 
         # list of awaited responses
         response_list = [
-            str('mysqldump -umymysqluser '
-                '-pmymysqlpassword '
-                '--skip-extended-insert '
-                'mydb > /destination/mydb.sql'),
-            str('cd /destination && git add mydb.sql'),
-            str('cd /destination && git commit -m "daily backup"'),
-            str('cd /destination && git push remotebox master')]
+            ('mysqldump -umymysqluser '
+             '-pmymysqlpassword '
+             '--skip-extended-insert '
+             'mydb > /destination/mydb.sql'),
+            ('cd /destination && git add mydb.sql'),
+            ('cd /destination && git commit -m "daily backup"'),
+            ('cd /destination && git push remotebox master')]
 
         # checking every call argument with its awaited response
         for call, response in zip(calls, response_list):
