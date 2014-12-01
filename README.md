@@ -30,7 +30,7 @@ backup:
                 # "month" means that it will save the backup in daily directories
                 # for example: "/media/backup/documents/07"
                 type: rsync_month
-		enabled: true
+                enabled: true
                 source: /home/user/documents
                 destination: /media/backup/documents
                 # rsync --exclude patterns here
@@ -44,24 +44,24 @@ backup:
                 # "once" backups straight in the destination directory
                 # for example: "/media/backup/Videos"
                 type: rsync_once
-		enabled: true
+                enabled: true
                 source: /home/user/Media/Videos
                 destination: /media/backup/Videos
         important_stuff:
                 # you can backup to and from an ssh host
                 type: rsync_month
-		enabled: true
+                enabled: true
                 source: /home/user/important_stuff
                 destination: user@host:/media/backup/important_stuff
-	mydb:
-		type: git_mysql
-		enabled: true
-		user: mymysqluser
-		password: mypassword
-		db_name: nameofthedb
-		destination: /media/backup/mydb
-		# name of the remote git pushes to
-		remote_name: mygitbox
+        mydb:
+                type: git_mysql
+                enabled: true
+                user: mymysqluser
+                password: mypassword
+                db_name: nameofthedb
+                destination: /media/backup/mydb
+                # name of the remote git pushes to
+                remote_name: mygitbox
 ```
 
 ## type
