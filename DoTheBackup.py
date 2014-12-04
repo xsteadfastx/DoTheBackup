@@ -1,4 +1,4 @@
-'''
+"""
 Usage:
     DoTheBackup.py (-f <config> | --file <config>) [--verbose]
     DoTheBackup.py -h | --help
@@ -7,7 +7,7 @@ Options:
     -h --help        Show this screen.
     -f --file        Reads config from YAML File.
     -v --verbose     Prints the created commands used.
-'''
+"""
 import arrow
 import yaml
 import os
@@ -27,7 +27,8 @@ class CreateCmds(object):
         self.cmds = []
 
     def cmd_list(self):
-        ''' returns list of commands '''
+        """Returns list of commands.
+        """
         # rsync
         if self.config['type'] == 'rsync_month' or \
            self.config['type'] == 'rsync_once':

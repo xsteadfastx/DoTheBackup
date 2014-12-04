@@ -8,7 +8,73 @@ import mock
 from DoTheBackup import from_file
 
 
-class TestRsync(unittest.TestCase):
+class Helper(object):
+
+    """Helper to setup tests.
+    """
+
+    @staticmethod
+    def inode_list(filelist):
+        """Returns a list of inodes for files.
+        """
+        inodes = []
+        for f in filelist:
+            fd = os.open(f, os.O_RDONLY)
+            info = os.fstat(fd)
+            inodes.append(info.st_ino)
+
+        return inodes
+
+    def setup_dothebackup(self):
+        # create some variables
+        self.now = arrow.utcnow()
+        self.today = self.now.format('DD')
+        self.yesterday = self.now.replace(days=-1).format('DD')
+        self.test_dir = tempfile.mkdtemp()
+
+        # create config
+        test_config = self.create_config(self.test_dir)
+
+        # save yaml
+        with open(os.path.join(self.test_dir, 'test.yaml'), 'w') as f:
+            f.write(yaml.dump(test_config))
+
+        # get config from test.yaml
+        with open(os.path.join(self.test_dir, 'test.yaml')) as f:
+            self.config = yaml.load(f)
+
+        # create logdir
+        os.makedirs(self.config['log_dir'])
+
+        # set arguments to serve docopt
+        self.arguments = {}
+        self.arguments['<config>'] = os.path.join(self.test_dir, 'test.yaml')
+        self.arguments['--verbose'] = False
+
+    def teardown_dothebackup(self):
+        # delete test.yaml
+        os.remove(os.path.join(
+            self.test_dir,
+            'test.yaml'))
+
+        # delete tmp test folders
+        shutil.rmtree(self.test_dir)
+
+    def create_fake_data(self):
+        """Creates test directories and test files.
+        """
+        # create dirs and fake files
+        for scalar, sequence in self.config['backup'].items():
+            os.makedirs(sequence['source'])
+            for i in range(10):
+                with tempfile.NamedTemporaryFile(mode='w',
+                                                 dir=sequence['source']) as f:
+                    f.write('THIS IS A TEST!')
+
+            os.makedirs(sequence['destination'])
+
+
+class TestRsyncMonth(unittest.TestCase, Helper):
 
     @staticmethod
     def create_config(test_dir):
@@ -27,76 +93,18 @@ class TestRsync(unittest.TestCase):
                         test_dir,
                         'backup/rsync-month-destination'),
                     'exclude': ['exclude_this', 'exclude_that'],
-                    'include': ['include_this', 'include_that']},
-                'test-rsync-once': {
-                    'type': 'rsync_once',
-                    'enabled': 'true',
-                    'source': os.path.join(
-                        test_dir,
-                        'backup/rsync-once-source'),
-                    'destination': os.path.join(
-                        test_dir,
-                        'backup/rsync-once-destination'),
-                    'exclude': ['exclude_this', 'exclude_that'],
                     'include': ['include_this', 'include_that']}}}
 
-    @staticmethod
-    def inode_list(filelist):
-        ''' returns a list of inodes for files '''
-        inodes = []
-        for f in filelist:
-            fd = os.open(f, os.O_RDONLY)
-            info = os.fstat(fd)
-            inodes.append(info.st_ino)
-
-        return inodes
-
     def setUp(self):
-        # create some variables
-        self.test_dir = tempfile.mkdtemp()
-
-        self.now = arrow.utcnow()
-        self.today = self.now.format('DD')
-        self.yesterday = self.now.replace(days=-1).format('DD')
-
-        # create config
-        test_data = self.create_config(self.test_dir)
-
-        # save yaml
-        with open(os.path.join(self.test_dir, 'test.yaml'), 'w') as f:
-            f.write(yaml.dump(test_data))
-
-        # get config from test.yaml
-        with open(os.path.join(self.test_dir, 'test.yaml')) as f:
-            self.config = yaml.load(f)
-
-        # create dirs and fake files
-        os.makedirs(self.config['log_dir'])
-
-        for scalar, sequence in self.config['backup'].items():
-            os.makedirs(sequence['source'])
-            for i in range(10):
-                with tempfile.NamedTemporaryFile(mode='w',
-                                                 dir=sequence['source']) as f:
-                    f.write('THIS IS A TEST!')
-
-            os.makedirs(sequence['destination'])
-
-        self.arguments = {}
-        self.arguments['<config>'] = os.path.join(self.test_dir, 'test.yaml')
-        self.arguments['--verbose'] = False
+        self.setup_dothebackup()
+        self.create_fake_data()
 
     def tearDown(self):
-        # delete test.yaml
-        os.remove(os.path.join(
-            self.test_dir,
-            'test.yaml'))
-
-        # delete tmp test folders
-        shutil.rmtree(self.test_dir)
+        self.teardown_dothebackup()
 
     def test_file_list(self):
-        ''' source filelist is equal to destination filelist '''
+        """Source filelist is equal to destination filelist.
+        """
         # run DoTheBackup
         from_file(self.arguments)
 
@@ -112,47 +120,48 @@ class TestRsync(unittest.TestCase):
             self.assertEqual(source_filelist, destination_filelist)
 
     def test_inodes(self):
-        ''' inodes are the same if rsync_month is used '''
+        """Inodes are the same if rsync_month is used.
+        """
         # run DoTheBackup
         from_file(self.arguments)
 
         for scalar, sequence in self.config['backup'].items():
-            if sequence['type'] == 'rsync_month':
-                destination = sequence['destination']
+            destination = sequence['destination']
 
-                # move the today dir to yesterday
-                shutil.move(
-                    os.path.join(destination, self.today),
-                    os.path.join(destination, self.yesterday))
+            # move the today dir to yesterday
+            shutil.move(
+                os.path.join(destination, self.today),
+                os.path.join(destination, self.yesterday))
 
-                # run from_file again
-                from_file(self.arguments)
+            # run from_file again
+            from_file(self.arguments)
 
-                # create inode list for the today backup dir
-                today_dir = os.path.join(destination, self.today)
-                today_filelist = [os.path.join(today_dir, f) for f
-                                  in os.listdir(today_dir)]
-                today_inodes = self.inode_list(today_filelist)
+            # create inode list for the today backup dir
+            today_dir = os.path.join(destination, self.today)
+            today_filelist = [os.path.join(today_dir, f) for f
+                              in os.listdir(today_dir)]
+            today_inodes = self.inode_list(today_filelist)
 
-                # create inode list for the yesterday backup dir
-                yesterday_dir = os.path.join(destination, self.yesterday)
-                yesterday_filelist = [os.path.join(yesterday_dir, f) for f
-                                      in os.listdir(yesterday_dir)]
-                yesterday_inodes = self.inode_list(yesterday_filelist)
+            # create inode list for the yesterday backup dir
+            yesterday_dir = os.path.join(destination, self.yesterday)
+            yesterday_filelist = [os.path.join(yesterday_dir, f) for f
+                                  in os.listdir(yesterday_dir)]
+            yesterday_inodes = self.inode_list(yesterday_filelist)
 
-                self.assertEqual(today_inodes, yesterday_inodes)
+            self.assertEqual(today_inodes, yesterday_inodes)
 
     @mock.patch('DoTheBackup.subprocess')
     def test_subprocess_called_with(self, subprocess):
-        ''' subprocess arguments are as expected '''
+        """Subprocess arguments are as expected.
+        """
         # mock stuff
         subprocess.Popen.return_value.returncode = 0
 
         # run DoTheBackup
         from_file(self.arguments)
 
-        # testing if subprocess.Popen got called 2 times
-        self.assertEqual(subprocess.Popen.call_count, 2)
+        # testing if subprocess.Popen got called once
+        self.assertEqual(subprocess.Popen.call_count, 1)
 
         # getting subprocess calls
         calls = subprocess.Popen.call_args_list
@@ -165,13 +174,7 @@ class TestRsync(unittest.TestCase):
 {}/backup/rsync-month-destination/{}'.format(self.yesterday,
                                              self.test_dir,
                                              self.test_dir,
-                                             self.today),
-                         'rsync -av --delete \
---exclude=exclude_this --exclude=exclude_that \
---include=include_this --include=include_that \
-{}/backup/rsync-once-source/ \
-{}/backup/rsync-once-destination'.format(self.test_dir,
-                                         self.test_dir)]
+                                             self.today)]
 
         # checking every call argument with its awaited response
         for call, response in zip(calls, response_list):
@@ -179,7 +182,80 @@ class TestRsync(unittest.TestCase):
             self.assertEqual(call_args[0], response)
 
 
-class TestGitMySQL(unittest.TestCase):
+class TestRsyncOnce(unittest.TestCase, Helper):
+
+    @staticmethod
+    def create_config(test_dir):
+        return {
+            'log_dir': os.path.join(
+                test_dir,
+                'logs'),
+            'backup': {
+                'test-rsync-once': {
+                    'type': 'rsync_once',
+                    'enabled': 'true',
+                    'source': os.path.join(
+                        test_dir,
+                        'backup/rsync-once-source'),
+                    'destination': os.path.join(
+                        test_dir,
+                        'backup/rsync-once-destination'),
+                    'exclude': ['exclude_this', 'exclude_that'],
+                    'include': ['include_this', 'include_that']}}}
+
+    def setUp(self):
+        self.setup_dothebackup()
+        self.create_fake_data()
+
+    def tearDown(self):
+        self.teardown_dothebackup()
+
+    def test_file_list(self):
+        """Source filelist is equal to destination filelist.
+        """
+        # run DoTheBackup
+        from_file(self.arguments)
+
+        for scalar, sequence in self.config['backup'].items():
+            source_filelist = os.listdir(sequence['source'])
+            if sequence['type'] == 'rsync_month':
+                destination_filelist = os.listdir(
+                    os.path.join(sequence['destination'],
+                                 self.today))
+            else:
+                destination_filelist = os.listdir(sequence['destination'])
+
+            self.assertEqual(source_filelist, destination_filelist)
+
+    @mock.patch('DoTheBackup.subprocess')
+    def test_subprocess_called_with(self, subprocess):
+        """Subprocess arguments are as expected.
+        """
+        # mock stuff
+        subprocess.Popen.return_value.returncode = 0
+
+        # run DoTheBackup
+        from_file(self.arguments)
+
+        # testing if subprocess.Popen got called once
+        self.assertEqual(subprocess.Popen.call_count, 1)
+
+        # getting subprocess calls
+        calls = subprocess.Popen.call_args_list
+
+        # list of awaited responses
+        response_list = ['rsync -av --delete \
+--exclude=exclude_this --exclude=exclude_that --include=include_this \
+--include=include_that {}/backup/rsync-once-source/ \
+{}/backup/rsync-once-destination'.format(self.test_dir,
+                                         self.test_dir)]
+
+        for call, response in zip(calls, response_list):
+            call_args, call_kwargs = call
+            self.assertEqual(call_args[0], response)
+
+
+class TestGitMySQL(unittest.TestCase, Helper):
 
     @staticmethod
     def create_config(test_dir):
@@ -197,34 +273,15 @@ class TestGitMySQL(unittest.TestCase):
                     'remote_name': 'remotebox'}}}
 
     def setUp(self):
-        # create some variables
-        self.test_dir = tempfile.mkdtemp()
-
-        # create config
-        self.config_file = tempfile.mkstemp()[1]
-        with open(self.config_file, 'w') as f:
-            f.write(yaml.dump(self.create_config(self.test_dir)))
-
-        # get config from test.yaml
-        with open(self.config_file) as f:
-            self.config = yaml.load(f)
-
-        # create log dir
-        os.makedirs(self.config['log_dir'])
-
-        # set arguments
-        self.arguments = {}
-        self.arguments['<config>'] = self.config_file
-        self.arguments['--verbose'] = False
+        self.setup_dothebackup()
 
     def tearDown(self):
-        # remove temp files
-        os.remove(self.config_file)
-        shutil.rmtree(self.test_dir)
+        self.teardown_dothebackup()
 
     @mock.patch('DoTheBackup.subprocess')
     def test_subprocess_called_with(self, subprocess):
-        ''' subprocess arguments are as expected '''
+        """Subprocess arguments are as expected.
+        """
         # mock stuff
         subprocess.Popen.return_value.returncode = 0
 
