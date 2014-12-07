@@ -1,5 +1,4 @@
 import arrow
-import unittest
 import os
 import yaml
 import shutil
@@ -74,7 +73,7 @@ class Helper(object):
             os.makedirs(sequence['destination'])
 
 
-class TestRsyncMonth(unittest.TestCase, Helper):
+class TestRsyncMonth(Helper):
 
     @staticmethod
     def create_config(test_dir):
@@ -95,11 +94,11 @@ class TestRsyncMonth(unittest.TestCase, Helper):
                     'exclude': ['exclude_this', 'exclude_that'],
                     'include': ['include_this', 'include_that']}}}
 
-    def setUp(self):
+    def setup_method(self, method):
         self.setup_dothebackup()
         self.create_fake_data()
 
-    def tearDown(self):
+    def teardown_method(self, method):
         self.teardown_dothebackup()
 
     def test_file_list(self):
@@ -117,7 +116,7 @@ class TestRsyncMonth(unittest.TestCase, Helper):
             else:
                 destination_filelist = os.listdir(sequence['destination'])
 
-            self.assertEqual(source_filelist, destination_filelist)
+            assert source_filelist == destination_filelist
 
     def test_inodes(self):
         """Inodes are the same if rsync_month is used.
@@ -148,7 +147,7 @@ class TestRsyncMonth(unittest.TestCase, Helper):
                                   in os.listdir(yesterday_dir)]
             yesterday_inodes = self.inode_list(yesterday_filelist)
 
-            self.assertEqual(today_inodes, yesterday_inodes)
+            assert today_inodes == yesterday_inodes
 
     @mock.patch('DoTheBackup.subprocess')
     def test_subprocess_called_with(self, subprocess):
@@ -161,7 +160,7 @@ class TestRsyncMonth(unittest.TestCase, Helper):
         from_file(self.arguments)
 
         # testing if subprocess.Popen got called once
-        self.assertEqual(subprocess.Popen.call_count, 1)
+        assert subprocess.Popen.call_count == 1
 
         # getting subprocess calls
         calls = subprocess.Popen.call_args_list
@@ -179,10 +178,11 @@ class TestRsyncMonth(unittest.TestCase, Helper):
         # checking every call argument with its awaited response
         for call, response in zip(calls, response_list):
             call_args, call_kwargs = call
-            self.assertEqual(call_args[0], response)
+
+            assert call_args[0] == response
 
 
-class TestRsyncOnce(unittest.TestCase, Helper):
+class TestRsyncOnce(Helper):
 
     @staticmethod
     def create_config(test_dir):
@@ -203,11 +203,11 @@ class TestRsyncOnce(unittest.TestCase, Helper):
                     'exclude': ['exclude_this', 'exclude_that'],
                     'include': ['include_this', 'include_that']}}}
 
-    def setUp(self):
+    def setup_method(self, method):
         self.setup_dothebackup()
         self.create_fake_data()
 
-    def tearDown(self):
+    def teardown_method(self, method):
         self.teardown_dothebackup()
 
     def test_file_list(self):
@@ -225,7 +225,7 @@ class TestRsyncOnce(unittest.TestCase, Helper):
             else:
                 destination_filelist = os.listdir(sequence['destination'])
 
-            self.assertEqual(source_filelist, destination_filelist)
+            assert source_filelist == destination_filelist
 
     @mock.patch('DoTheBackup.subprocess')
     def test_subprocess_called_with(self, subprocess):
@@ -238,7 +238,7 @@ class TestRsyncOnce(unittest.TestCase, Helper):
         from_file(self.arguments)
 
         # testing if subprocess.Popen got called once
-        self.assertEqual(subprocess.Popen.call_count, 1)
+        assert subprocess.Popen.call_count == 1
 
         # getting subprocess calls
         calls = subprocess.Popen.call_args_list
@@ -252,10 +252,10 @@ class TestRsyncOnce(unittest.TestCase, Helper):
 
         for call, response in zip(calls, response_list):
             call_args, call_kwargs = call
-            self.assertEqual(call_args[0], response)
+            assert call_args[0] == response
 
 
-class TestGitMySQL(unittest.TestCase, Helper):
+class TestGitMySQL(Helper):
 
     @staticmethod
     def create_config(test_dir):
@@ -272,10 +272,10 @@ class TestGitMySQL(unittest.TestCase, Helper):
                     'destination': '/destination',
                     'remote_name': 'remotebox'}}}
 
-    def setUp(self):
+    def setup_method(self, method):
         self.setup_dothebackup()
 
-    def tearDown(self):
+    def teardown_method(self, method):
         self.teardown_dothebackup()
 
     @mock.patch('DoTheBackup.subprocess')
@@ -289,7 +289,7 @@ class TestGitMySQL(unittest.TestCase, Helper):
         from_file(self.arguments)
 
         # testing if subprocess.Popen got called 4 times
-        self.assertEqual(subprocess.Popen.call_count, 4)
+        assert subprocess.Popen.call_count == 4
 
         # getting subprocess calls
         calls = subprocess.Popen.call_args_list
@@ -307,8 +307,4 @@ class TestGitMySQL(unittest.TestCase, Helper):
         # checking every call argument with its awaited response
         for call, response in zip(calls, response_list):
             call_args, call_kwargs = call
-            self.assertEqual(call_args[0], response)
-
-
-if __name__ == '__main__':
-    unittest.main()
+            assert call_args[0] == response
