@@ -4,15 +4,15 @@ python:
 #branches:
 #        only: master
 env:
-        - TOX_ENV=py27
-        - TOX_ENV=py32
-        - TOX_ENV=py33
-        - TOX_ENV=py34
-        - TOX_ENV=pypy
-        - TOX_ENV=coverage
-        - TOX_ENV=flake8
+        - TOXENV=py27
+        - TOXENV=py32
+        - TOXENV=py33
+        - TOXENV=py34
+        - TOXENV=pypy
+        - TOXENV=coverage
+        - TOXENV=flake8
 install:
         - travis_retry sudo apt-get update
         - travis_retry sudo apt-get install rsync
         - travis_retry pip install tox
-script: tox -e $TOX_ENV
+script: tox -e $TOXENV
