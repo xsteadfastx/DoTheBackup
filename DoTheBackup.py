@@ -16,8 +16,10 @@ from docopt import docopt
 
 
 NOW = arrow.utcnow()
-TODAY = NOW.format('DD')
-YESTERDAY = NOW.replace(days=-1).format('DD')
+TODAY_DAY_OF_MONTH = NOW.format('DD')
+YESTERDAY_DAY_OF_MONTH = NOW.replace(days=-1).format('DD')
+TODAY_DAY_OF_WEEK = NOW.format('d')
+YESTERDAY_DAY_OF_WEEK = NOW.replace(days=-1).format('d')
 
 
 class CreateCmds(object):
@@ -30,9 +32,8 @@ class CreateCmds(object):
         """Returns list of commands.
         """
         # rsync
-        if self.config['type'] == 'rsync_month' or \
-           self.config['type'] == 'rsync_once':
-            self._rsync_month_once()
+        if self .config['type'] in ['rsync_month', 'rsync_week', 'rsync_once']:
+            self._rsync_month_week_once()
             return self.cmds
 
         # git mysql
@@ -62,7 +63,7 @@ class CreateCmds(object):
                               self.config['remote_name'],
                               'master'])
 
-    def _rsync_month_once(self):
+    def _rsync_month_week_once(self):
         source = os.path.normpath(self.config['source']) + '/'
         destination = os.path.normpath(self.config['destination'])
 
@@ -80,8 +81,12 @@ class CreateCmds(object):
         # do magic of type is month
         if self.config['type'] == 'rsync_month':
             # if using days you have to specify link-dest
-            cmd.append('--link-dest=../{}'.format(YESTERDAY))
-            destination = os.path.join(destination, TODAY)
+            cmd.append('--link-dest=../{}'.format(YESTERDAY_DAY_OF_MONTH))
+            destination = os.path.join(destination, TODAY_DAY_OF_MONTH)
+        elif self.config['type'] == 'rsync_week':
+            # if using days you have to specify link-dest
+            cmd.append('--link-dest=../{}'.format(YESTERDAY_DAY_OF_WEEK))
+            destination = os.path.join(destination, TODAY_DAY_OF_WEEK)
         elif self.config['type'] == 'rsync_once':
             pass
 
