@@ -40,5 +40,7 @@ junit*.xml
 # OWN STUFF
 .ropeproject
 venv
+env
 DoTheBackup.yaml
 DoTheBackup-cron.sh
+.cache

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-
-cd /opt/DoTheBackup
-source venv/bin/activate
-
-python DoTheBackup.py -f DoTheBackup.yaml
