@@ -50,8 +50,8 @@ once_exclude_input = {
 }
 
 once_exclude_expected = [
-    ['rsync', '-av', '--delete', '--include=eins', '--include=zwei',
-     '/foo/bar/', '/bumm/zack']
+    ['rsync', '-av', '--delete', '--exclude=drei', '--exclude=vier',
+     '--include=eins', '--include=zwei', '/foo/bar/', '/bumm/zack']
 ]
 
 once_missing_mode = {
@@ -197,6 +197,7 @@ def test_mode_month(fake_data):
     (week_input, week_expected),
     (month_input, month_expected),
     (once_include_input, once_include_expected),
+    (once_exclude_input, once_exclude_expected),
     (once_ssh_input, once_ssh_expected)
 ])
 def test_main(input, expected, rsync_found):
