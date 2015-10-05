@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/xsteadfastx/DoTheBackup.svg?branch=master)](https://travis-ci.org/xsteadfastx/DoTheBackup)
-[![Coverage Status](https://img.shields.io/coveralls/xsteadfastx/DoTheBackup.svg)](https://coveralls.io/r/xsteadfastx/DoTheBackup?branch=master)
+[![Coverage Status](http://img.shields.io/codecov/c/github/xsteadfastx/DoTheBackup.svg)](https://codecov.io/github/xsteadfastx/DoTheBackup)
 
 A small tool to run backups in different ways. Its pluggable.
 
@@ -65,3 +65,8 @@ backup:
 
 ### rsync ###
 It uses [rsync](https://rsync.samba.org/) to make backups. Be sure you have `rsync` installed.
+
+#### Modes ####
+- **once**: Copies one to one.
+- **week**: Keeps one week. It stores the files in a numbered day directory and uses hardlinks to link to the files that are not changed from the day before.
+- **month**: Keeps one month. it stores the files for one month in a day numbered directory and works with hardlinks just like the week mode.
