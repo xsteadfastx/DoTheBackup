@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/xsteadfastx/DoTheBackup.svg?branch=master)](https://travis-ci.org/xsteadfastx/DoTheBackup)
 [![Coverage Status](http://img.shields.io/codecov/c/github/xsteadfastx/DoTheBackup.svg)](https://codecov.io/github/xsteadfastx/DoTheBackup)
+[![Pypi Version](https://img.shields.io/pypi/v/dothebackup.svg)](https://pypi.python.org/pypi/dothebackup)
 
 A small tool to run backups in different ways. Its pluggable.
 
