@@ -60,12 +60,29 @@ backup:
 		source: /home/user/very_important
 		# this will use ssh to transfer the data over ssh
 		destinaton: user@remote:/media/backup/important_stuff
+
+	dothebackup:
+		type: git
+		enabled: true
+		source: https://github.com/xsteadfastx/DoTheBackup.git
+		destination: /media/backup/repos/dothebackup
 ```
 
 ## Type plugins ##
 
+### git ###
+A simple git repo cloner. If the destination is not a cloned repo it will first perfom a `git clone` and then a `git pull` everytime `dothebackup` is running.
+
+#### Keys ####
+- **source**
+- **destination**
+
 ### rsync ###
 It uses [rsync](https://rsync.samba.org/) to make backups. Be sure you have `rsync` installed.
+
+#### Keys ####
+- **source**
+- **destination**
 
 #### Modes ####
 - **once**: Copies one to one.

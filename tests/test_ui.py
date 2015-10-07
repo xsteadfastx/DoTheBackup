@@ -62,3 +62,22 @@ def test_runner_test(input, expected, capsys):
     out, err = capsys.readouterr()
 
     assert out == expected
+
+
+def test_enabled_missing_in_builder(capsys):
+    with pytest.raises(SystemExit):
+        ui.builder({
+            'log_dir': '/logs',
+            'backup': {
+                'test': {
+                    'type': 'rsync',
+                    'mode': 'once',
+                    'source': '/source',
+                    'destination': '/destination'
+                }
+            }
+        })
+
+    out, err = capsys.readouterr()
+
+    assert out == 'ERROR: "enabled" is missing in the config.\n'

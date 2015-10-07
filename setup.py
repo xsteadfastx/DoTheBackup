@@ -19,7 +19,7 @@ except ImportError:
 
 setup(
     name='dothebackup',
-    version='0.1',
+    version='0.1.1',
     description='backup tool with plugins',
     author='Marvin Steadfast',
     author_email='marvin@xsteadfastx.org',
