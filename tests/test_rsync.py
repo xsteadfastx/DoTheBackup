@@ -152,7 +152,8 @@ def test_mode_once(fake_data):
     fake_data.join('test.yml').write(yaml.dump(config_once(str(fake_data))))
 
     # run it
-    ui.get_started(str(fake_data.join('test.yml')), False)
+    with open(str(fake_data.join('test.yml')), 'r') as f:
+        ui.get_started(f, False)
 
     # check filelist
     source_filelist = os.listdir(os.path.join(str(fake_data), 'source'))
@@ -167,15 +168,17 @@ def test_mode_month(fake_data):
     fake_data.join('test.yml').write(
         yaml.dump(config_link_dest(str(fake_data))))
 
-    # run for the first time
-    ui.get_started(str(fake_data.join('test.yml')), False)
+    with open(str(fake_data.join('test.yml')), 'r') as f:
+        # run for the first time
+        ui.get_started(f, False)
 
     # move the today dir to yesterday dir
     shutil.move(str(fake_data.join('destination', today_day_of_month)),
                 str(fake_data.join('destination', yesterday_day_of_month)))
 
-    # run backup again
-    ui.get_started(str(fake_data.join('test.yml')), False)
+    with open(str(fake_data.join('test.yml')), 'r') as f:
+        # run backup again
+        ui.get_started(f, False)
 
     # today inode list
     today_dir = str(fake_data.join('destination', today_day_of_month))

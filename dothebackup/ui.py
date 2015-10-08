@@ -11,10 +11,7 @@ from dothebackup import PLUGINS
 def parse_config(configfile):
     '''Read config file.
     '''
-    with open(configfile, 'r') as f:
-        config = yaml.load(f)
-
-    return config
+    return yaml.load(configfile)
 
 
 def check_config_keys(config, key_list):
@@ -145,7 +142,7 @@ def get_started(configfile, test):
 
 
 @click.command()
-@click.argument('configfile', required=True)
+@click.argument('configfile', type=click.File('r'))
 @click.option('--test', is_flag=True,
               help='Only prints the created commands that would be used.')
 @click.version_option()
