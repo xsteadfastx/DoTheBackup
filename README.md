@@ -28,44 +28,44 @@ log_dir: /var/log/DoTheBackup
 
 # define your backups here
 backup:
-        my_documents:
-		type: rsync
-                # "month" means that it will save the backup in daily directories
-                # for example: "/media/backup/documents/07"
-		mode: month
-                enabled: true
-                source: /home/user/documents
-                destination: /media/backup/documents
-                # rsync --exclude patterns here
-                exclude:
-                        - foo
-                        - bar
-                # rsync --include patterns here
-                include:
-                        - very_important_dir
+    my_documents:
+        type: rsync
+        # "month" means that it will save the backup in daily directories
+        # for example: "/media/backup/documents/07"
+        mode: month
+        enabled: true
+        source: /home/user/documents
+        destination: /media/backup/documents
+        # rsync --exclude patterns here
+        exclude:
+            - foo
+            - bar
+        # rsync --include patterns here
+        include:
+            - very_important_dir
 
-        video:
-		type: rsync
-                # "once" backups straight in the destination directory
-                # for example: "/media/backup/Videos"
-                mode: once
-                enabled: true
-                source: /home/user/Media/Videos
-                destination: /media/backup/Videos
+    video:
+        type: rsync
+        # "once" backups straight in the destination directory
+        # for example: "/media/backup/Videos"
+        mode: once
+        enabled: true
+        source: /home/user/Media/Videos
+        destination: /media/backup/Videos
 
-	important_stuff:
-		type: rsync
-		mode: month
-		enabled: true
-		source: /home/user/very_important
-		# this will use ssh to transfer the data over ssh
-		destinaton: user@remote:/media/backup/important_stuff
+    important_stuff:
+        type: rsync
+        mode: month
+        enabled: true
+        source: /home/user/very_important
+        # this will use ssh to transfer the data over ssh
+        destinaton: user@remote:/media/backup/important_stuff
 
-	dothebackup:
-		type: git
-		enabled: true
-		source: https://github.com/xsteadfastx/DoTheBackup.git
-		destination: /media/backup/repos/dothebackup
+    dothebackup:
+        type: git
+        enabled: true
+        source: https://github.com/xsteadfastx/DoTheBackup.git
+        destination: /media/backup/repos/dothebackup
 ```
 
 ## Type plugins ##
