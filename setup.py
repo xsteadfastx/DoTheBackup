@@ -1,32 +1,23 @@
 from setuptools import setup
-from os import path
+import os
 
 
-here = path.abspath(path.dirname(__file__))
+def _read(fn):
+    path = os.path.join(os.path.dirname(__file__), fn)
 
-try:
-    from pypandoc import convert
-
-    long_description = convert(path.join(here, 'README.md'), 'rst')
-
-except ImportError:
-    print(
-        "ERROR: pypandoc module not found, could not convert Markdown to RST")
-
-    with open(path.join(here, 'README.md'), 'r') as f:
-        long_description = f.read()
+    return open(path).read()
 
 
 setup(
     name='dothebackup',
-    version='0.1.1',
+    version='0.1.2',
     description='backup tool with plugins',
     author='Marvin Steadfast',
     author_email='marvin@xsteadfastx.org',
     url='https://github.com/xsteadfastx/DoTheBackup',
     license='MIT',
     platforms='ALL',
-    long_description=long_description,
+    long_description=_read('README.rst'),
     packages=[
         'dothebackup',
         'dothebackup.plugs'
@@ -35,7 +26,8 @@ setup(
     install_requires=[
         'Click',
         'pyyaml',
-        'arrow'
+        'arrow',
+        'requests'
     ],
     entry_points={
         'console_scripts': [
