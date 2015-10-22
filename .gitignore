@@ -44,3 +44,4 @@ env
 DoTheBackup.yaml
 DoTheBackup-cron.sh
 .cache
+docs/_build

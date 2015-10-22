@@ -9,6 +9,13 @@ def dot_git_exists(monkeypatch):
                         lambda x: True)
 
 
+@pytest.fixture(autouse=True)
+def git_executable(monkeypatch):
+    monkeypatch.setattr(
+        'dothebackup.plugins.spawn.find_executable',
+        lambda x: '/usr/bin/git')
+
+
 @pytest.mark.parametrize('source', [
     'https://github.com/xsteadfastx/DoTheBackup.git',
     'git@github.com:xsteadfastx/DoTheBackup.git'
