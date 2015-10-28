@@ -3,6 +3,12 @@ import pytest
 from dothebackup import PLUGINS
 
 
+@pytest.fixture
+def tar_found(monkeypatch):
+    monkeypatch.setattr('dothebackup.plugins.spawn.find_executable',
+                        lambda x: '/bin/tar')
+
+
 @pytest.mark.parametrize('input,expected', [
     ({'type': 'tar',
       'source': ['/foo/bar'],
@@ -25,6 +31,6 @@ from dothebackup import PLUGINS
       'destination': '/bar/zonk.tar.gz'},
      [['tar', '-vcp', '-z', '-f', '/bar/zonk.tar.gz', '/foo/bar']])
 ])
-def test_main(input, expected):
+def test_main(input, expected, tar_found):
     '''Test created command list.'''
     assert PLUGINS['tar'](input) == expected
