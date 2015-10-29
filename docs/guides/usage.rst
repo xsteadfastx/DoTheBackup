@@ -22,6 +22,8 @@ First you have to create a config file. Its formatted in `YAML`_. The required k
 
 Be sure that you have the key ``enabled`` set to ``true``. Else that part of the config will be ignored.
 
+You also can use the option ``--test`` to get all commands print instead of running them.
+
 Example
 -------
 
