@@ -23,3 +23,9 @@ def fake_data(tmpdir):
     tmpdir.mkdir('destination')
 
     yield tmpdir
+
+
+@pytest.fixture
+def today_is_00(monkeypatch):
+    monkeypatch.setattr('dothebackup.tools.today',
+                        lambda: '00')

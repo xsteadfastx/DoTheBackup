@@ -39,7 +39,7 @@ Here's an example::
     backup:
       my_documents:
         type: rsync
-        enabled: true
+        enabled: yes
         mode: month
         source: /home/myuser/documents
         destination: /media/backup/documents
@@ -57,7 +57,7 @@ It supports ssh for transfering data to remote hosts. For example::
     backup:
       my_documents:
         type: rsync
-        enabled: true
+        enabled: yes
         mode: once
         source: /home/myuser/documents
         destination: ssh://foo@remotehost:/media/backup/documents

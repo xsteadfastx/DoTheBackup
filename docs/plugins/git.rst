@@ -25,6 +25,6 @@ Here's an example::
     backup:
       my_repository:
         type: git
-        enabled: true
+        enabled: yes
         source: https://github.com/xsteadfastx/DoTheBackup.git
         destination: /media/backup/repos/dothebackup

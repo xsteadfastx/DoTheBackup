@@ -4,8 +4,11 @@ python:
 #branches:
 #        only: master
 env:
+        - TOXENV=py32
         - TOXENV=py33
         - TOXENV=py34
+        - TOXENV=py35
+        - TOXENV=coverage
         - TOXENV=flake8
 install:
         - travis_retry sudo apt-get update

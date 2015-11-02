@@ -10,7 +10,7 @@ def _read(fn):
 
 setup(
     name='dothebackup',
-    version='0.1.3',
+    version='0.1.4',
     description='backup tool with plugins',
     author='Marvin Steadfast',
     author_email='marvin@xsteadfastx.org',
@@ -36,6 +36,10 @@ setup(
     },
     classifiers=[
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3 :: Only',
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',

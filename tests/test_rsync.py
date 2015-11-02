@@ -5,7 +5,7 @@ import pytest
 import shutil
 import yaml
 
-from dothebackup import PLUGINS, ui
+from dothebackup import PLUGINS, runner
 
 
 # GLOBAL VARIABLES
@@ -139,7 +139,7 @@ def test_mode_once(fake_data):
 
     # run it
     with open(str(fake_data.join('test.yml')), 'r') as f:
-        ui.get_started(f, False)
+        runner.get_started(f, name=None, test=False)
 
     # check filelist
     source_filelist = os.listdir(os.path.join(str(fake_data), 'source'))
@@ -156,7 +156,7 @@ def test_mode_month(fake_data):
 
     with open(str(fake_data.join('test.yml')), 'r') as f:
         # run for the first time
-        ui.get_started(f, False)
+        runner.get_started(f, name=None, test=False)
 
     # move the today dir to yesterday dir
     shutil.move(str(fake_data.join('destination', today_day_of_month)),
@@ -164,7 +164,7 @@ def test_mode_month(fake_data):
 
     with open(str(fake_data.join('test.yml')), 'r') as f:
         # run backup again
-        ui.get_started(f, False)
+        runner.get_started(f, name=None, test=False)
 
     # today inode list
     today_dir = str(fake_data.join('destination', today_day_of_month))

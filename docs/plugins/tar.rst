@@ -34,7 +34,7 @@ Here's an example::
     backup:
       foo:
         type: tar
-        enabled: true
+        enabled: yes
         source:
           - /home
           - /src

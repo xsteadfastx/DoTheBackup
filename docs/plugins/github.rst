@@ -25,6 +25,6 @@ Here's an example::
     backup:
       mygithubrepos:
         type: github
-        enabled: true
+        enabled: yes
         username: xsteadfastx
         destination: /media/backup/github
