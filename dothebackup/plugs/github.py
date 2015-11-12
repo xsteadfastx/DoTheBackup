@@ -1,7 +1,7 @@
 import os
 import requests
 
-from dothebackup import plugins
+from dothebackup import plugins, tools
 
 
 def get_repos(username):
@@ -22,7 +22,7 @@ def main(config):
         destination = os.path.join(config['destination'], repo['name'])
 
         # if the repo is not cloned yet, do it first
-        if not os.path.isdir(os.path.join(destination, '.git')):
+        if not tools.git_cloned_yet(destination):
             commands.append(['git', 'clone', repo['clone_url'], destination])
 
         # add git pull command

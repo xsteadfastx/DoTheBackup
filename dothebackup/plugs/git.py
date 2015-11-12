@@ -1,6 +1,4 @@
-import os
-
-from dothebackup import plugins
+from dothebackup import plugins, tools
 
 
 @plugins.required_executables(['git'])
@@ -9,7 +7,7 @@ def main(config):
     commands = []
 
     # if there is no cloned repo yet... do it first
-    if not os.path.isdir(os.path.join(config['destination'], '.git')):
+    if not tools.git_cloned_yet(config['destination']):
         commands.append(['git', 'clone', config['source'],
                          config['destination']])
 

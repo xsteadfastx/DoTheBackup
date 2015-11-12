@@ -5,7 +5,7 @@ from dothebackup import PLUGINS
 
 @pytest.fixture
 def dot_git_exists(monkeypatch):
-    monkeypatch.setattr('git.os.path.isdir',
+    monkeypatch.setattr('dothebackup.tools.git_cloned_yet',
                         lambda x: True)
 
 

@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.1.5
+-----
+
+* Added ``git_cloned_yet`` and ``git_something_to_commit`` function to tools.
+* Added :doc:`/plugins/mysql` plugin.
+
 0.1.4
 -----
 
