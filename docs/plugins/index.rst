@@ -6,5 +6,6 @@ Plugins
 
    git
    github
+   mysql
    rsync
    tar
