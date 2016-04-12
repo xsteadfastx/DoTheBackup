@@ -23,7 +23,7 @@ A list of required configuration keys:
 - **database**:
   Name of the database to backup.
 - **destination**:
-  The Folder where to backup is going to be saved to. Its just the name of the folder. The dump itself will be called ``<databasename>.sql``.
+  The folder where the backup is going to be saved to. Its just the name of the folder. The dump itself will be called ``<databasename>.sql``.
 
 Its also needed to define a ``mode``. Here is a list:
 
