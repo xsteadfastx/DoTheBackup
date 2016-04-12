@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1.6
+-----
+
+* Added :doc:`/plugins/slapcat` plugin.
+
 0.1.5
 -----
 

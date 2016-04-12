@@ -8,4 +8,5 @@ Plugins
    github
    mysql
    rsync
+   slapcat
    tar
