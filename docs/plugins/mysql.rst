@@ -37,6 +37,7 @@ Here's an example::
     log_dir: /var/log/dothebackup
     backup:
       mydatabase:
+        enabled: yes
         type: mysql
         mode: git
         server: localhost

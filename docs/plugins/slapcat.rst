@@ -29,6 +29,7 @@ Here's a example::
    log_dir: /var/log/dothebackup
    backup:
      myldap:
+       enabled: yes
        type: slapcat
        mode: git
        destination: /media/backup/myldap
