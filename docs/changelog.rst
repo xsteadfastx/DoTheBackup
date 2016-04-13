@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1.7
+-----
+
+* Fixes a bug where git something to commit detection fails if git is not initialised yet
+
 0.1.6
 -----
 

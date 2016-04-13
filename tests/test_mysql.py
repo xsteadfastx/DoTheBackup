@@ -41,7 +41,12 @@ def git_executable(monkeypatch):
     }, [['cd', '/foo/bar', '&&', 'git', 'init'],
         ['mysqldump', '--skip-extended-insert', '--skip-comments',
          '--user=myuser', '--password=mypassword', '--host=localhost',
-         'mydatabase', '>', '/foo/bar/mydatabase.sql']]
+         'mydatabase', '>', '/foo/bar/mydatabase.sql'],
+        ['cd', '/foo/bar',
+         '&&',
+         'git', 'add', 'mydatabase.sql',
+         '&&',
+         'git', 'commit', '-m', '"new dump"']]
     )
 ])
 def test_main_nothing_there_yet(input, expected, nothing_to_commit):

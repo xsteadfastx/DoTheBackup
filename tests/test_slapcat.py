@@ -28,7 +28,10 @@ def git_executable(monkeypatch):
         'mode': 'git',
         'destination': '/foo/bar'
     }, [['cd', '/foo/bar', '&&', 'git', 'init'],
-        ['slapcat', '-l', '/foo/bar/backup.ldif']]
+        ['slapcat', '-l', '/foo/bar/backup.ldif'],
+        ['cd', '/foo/bar', '&&', 'git', 'add', 'backup.ldif',
+         '&&',
+         'git', 'commit', '-m', '"new export"']]
     )
 ])
 def test_main_nothing_there_yet(input, expected, nothing_to_commit):

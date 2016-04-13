@@ -9,12 +9,14 @@ from dothebackup import plugins, tools
 def main(config):
     commands = []
 
+    destination = config['destination']
+
     # if commiting every dump to a git repo it has to init first if
     # its not there
     if config['mode'] == 'git':
-        if not tools.git_cloned_yet(config['destination']):
-            commands.append(['cd', config['destination'], '&&',
-                             'git', 'init'])
+        cloned_yet = tools.git_cloned_yet(destination)
+        if not cloned_yet:
+            commands.append(['cd', destination, '&&', 'git', 'init'])
 
     # mysqldump command
     commands.append(['mysqldump', '--skip-extended-insert', '--skip-comments',
@@ -24,16 +26,16 @@ def main(config):
                      config['database'],
                      '>',
                      path.join(
-                         tools.absolutenormpath(config['destination']),
+                         tools.absolutenormpath(destination),
                          '{}.sql'.format(config['database']))])
 
     # commit if git mode is used
     if config['mode'] == 'git':
 
         # only commit if there is something to be commited
-        if tools.git_something_to_commit(config['destination']):
+        if not cloned_yet or tools.git_something_to_commit(destination):
 
-            commands.append(['cd', config['destination'],
+            commands.append(['cd', destination,
                              '&&',
                              'git', 'add', '{}.sql'.format(config['database']),
                              '&&',

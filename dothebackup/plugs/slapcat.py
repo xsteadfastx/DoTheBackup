@@ -8,22 +8,23 @@ from dothebackup import plugins, tools
 def main(config):
     commands = []
 
+    destination = config['destination']
+
     # git init if its not a repo yet
     if config['mode'] == 'git':
-        if not tools.git_cloned_yet(config['destination']):
-            commands.append(['cd', config['destination'], '&&',
-                             'git', 'init'])
+        cloned_yet = tools.git_cloned_yet(destination)
+        if not cloned_yet:
+            commands.append(['cd', destination, '&&', 'git', 'init'])
 
     # slapcat command
     commands.append(['slapcat', '-l',
-                     join(tools.absolutenormpath(config['destination']),
-                          'backup.ldif')])
+                     join(tools.absolutenormpath(destination), 'backup.ldif')])
 
     # commit if git mode is used
     if config['mode'] == 'git':
-        if tools.git_something_to_commit(config['destination']):
+        if not cloned_yet or tools.git_something_to_commit(destination):
             commands.append(
-                ['cd', config['destination'],
+                ['cd', destination,
                  '&&',
                  'git', 'add', 'backup.ldif',
                  '&&',
