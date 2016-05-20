@@ -8,7 +8,7 @@ Usage
       Commandline interface.
 
     Options:
-      --name TEXT  Run a specifig job from the config.
+      --name TEXT  Run a specific job from the config.
       --test     Only prints the created commands that would be used.
       --version  Show the version and exit.
       --help     Show this message and exit.
