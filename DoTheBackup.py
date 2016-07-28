@@ -9,6 +9,7 @@ Options:
     -v --verbose     Prints the created commands used.
 """
 import arrow
+import datetime
 import yaml
 import os
 import subprocess
@@ -171,6 +172,7 @@ def from_file(arguments):
             with open(
                 os.path.join(log_dir,
                              '{}.log'.format(scalar)), 'a') as f:
+                f.write('Finished at: {}'.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
                 f.write('Exit Code: {}'.format(code))
 
 
