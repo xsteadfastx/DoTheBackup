@@ -149,8 +149,13 @@ def run_commands(commands, test, log_dir):
 
             with open(log, 'a') as f:
                 finishing_time = datetime.datetime.now()
-                f.write('Finished at: {}'.format(finishing_time.strftime("%Y-%m-%d %H:%M")))
-                f.write('Total runtime: {} seconds.'.format((finishing_time - starting_time).total_seconds()))
+                f.write('Finished at: {}'.format(
+                    finishing_time.strftime("%Y-%m-%d %H:%M"))
+                )
+                f.write(
+                    'Total runtime: {} seconds.'.format(
+                        (finishing_time - starting_time).total_seconds())
+                )
                 f.write('Exit code: {}'.format(code))
 
 
