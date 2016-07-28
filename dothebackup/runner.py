@@ -1,4 +1,5 @@
 from __future__ import print_function
+import datetime
 import os
 import subprocess
 import sys
@@ -113,6 +114,7 @@ def run_commands(commands, test, log_dir):
 
             # run through commands
             first_cmd = True
+            starting_time = datetime.datetime.now()
             for command in command_list:
 
                 # define mode to open file. its different on the first run
@@ -146,6 +148,9 @@ def run_commands(commands, test, log_dir):
                     code = 1
 
             with open(log, 'a') as f:
+                finishing_time = datetime.datetime.now()
+                f.write('Finished at: {}'.format(finishing_time.strftime("%Y-%m-%d %H:%M")))
+                f.write('Total runtime: {} seconds.'.format((finishing_time - starting_time).total_seconds()))
                 f.write('Exit code: {}'.format(code))
 
 
