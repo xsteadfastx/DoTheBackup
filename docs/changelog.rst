@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.1.8
+-----
+
+* Adds finishing date and total runtime to log. Thanks to `derphilipp`_.
+
+.. _derphilipp: https://github.com/xsteadfastx/DoTheBackup/commit/b1a9abe863993993fa9589e3e06937d95606e9af
+
 0.1.7
 -----
 
