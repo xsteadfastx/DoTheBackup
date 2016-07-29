@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.1.9
+-----
+
+* Fixed new line bug. Merged `#5`_
+
+.. _#5: https://github.com/xsteadfastx/DoTheBackup/pull/5
+
 0.1.8
 -----
 
