@@ -149,14 +149,14 @@ def run_commands(commands, test, log_dir):
 
             with open(log, 'a') as f:
                 finishing_time = datetime.datetime.now()
-                f.write('Finished at: {}'.format(
+                f.write('Finished at: {}\n'.format(
                     finishing_time.strftime("%Y-%m-%d %H:%M"))
                 )
                 f.write(
-                    'Total runtime: {} seconds.'.format(
+                    'Total runtime: {} seconds.\n'.format(
                         (finishing_time - starting_time).total_seconds())
                 )
-                f.write('Exit code: {}'.format(code))
+                f.write('Exit code: {}\n'.format(code))
 
 
 def get_started(configfile, name, test):
