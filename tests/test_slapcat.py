@@ -1,7 +1,5 @@
 import pytest
 
-from dothebackup import PLUGINS
-
 
 @pytest.fixture(autouse=True)
 def mysqldump_executable(monkeypatch):
@@ -34,11 +32,12 @@ def git_executable(monkeypatch):
          'git', 'commit', '-m', '"new export"']]
     )
 ])
-def test_main_nothing_there_yet(input, expected, nothing_to_commit):
-    assert PLUGINS['slapcat'](input) == expected
+def test_main_nothing_there_yet(input, expected, nothing_to_commit, plugins):
+    assert plugins['slapcat'](input) == expected
 
 
-def test_main_git_already_cloned_new_dump(tmpdir, something_to_commit):
+def test_main_git_already_cloned_new_dump(tmpdir, something_to_commit,
+                                          plugins):
     tmpdir.mkdir('.git')
 
     input = {
@@ -56,10 +55,11 @@ def test_main_git_already_cloned_new_dump(tmpdir, something_to_commit):
          'git', 'commit', '-m', '"new export"']
     ]
 
-    assert PLUGINS['slapcat'](input) == expected
+    assert plugins['slapcat'](input) == expected
 
 
-def test_main_git_already_cloned_nothing_new(tmpdir, nothing_to_commit):
+def test_main_git_already_cloned_nothing_new(tmpdir, nothing_to_commit,
+                                             plugins):
     tmpdir.mkdir('.git')
 
     input = {
@@ -72,4 +72,4 @@ def test_main_git_already_cloned_nothing_new(tmpdir, nothing_to_commit):
         ['slapcat', '-l', '{}/backup.ldif'.format(str(tmpdir))],
     ]
 
-    assert PLUGINS['slapcat'](input) == expected
+    assert plugins['slapcat'](input) == expected

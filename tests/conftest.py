@@ -1,5 +1,12 @@
 import pytest
 
+from dothebackup.plugins import load_plugins
+
+
+@pytest.fixture
+def plugins():
+    return load_plugins()
+
 
 @pytest.fixture
 def rsync_found(monkeypatch):

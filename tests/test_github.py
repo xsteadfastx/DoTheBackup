@@ -1,8 +1,6 @@
 import pytest
 import json
 
-from dothebackup import PLUGINS
-
 
 @pytest.fixture(autouse=True)
 def get_repos(monkeypatch):
@@ -21,7 +19,7 @@ def git_executable(monkeypatch):
         lambda x: '/usr/bin/git')
 
 
-def test_main_not_cloned_yet():
+def test_main_not_cloned_yet(plugins):
     config = {
         'type': 'github',
         'destination': '/foo/bar',
@@ -37,4 +35,4 @@ def test_main_not_cloned_yet():
         ['cd', '/foo/bar/art_millionaire', '&&', 'git', 'pull']
     ]
 
-    assert PLUGINS['github'](config) == expected
+    assert plugins['github'](config) == expected

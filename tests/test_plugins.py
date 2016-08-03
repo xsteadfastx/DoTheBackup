@@ -1,7 +1,5 @@
 import pytest
 
-from dothebackup import PLUGINS
-
 
 once_input = {
     'type': 'rsync',
@@ -20,18 +18,18 @@ once_missing_mode = {
 @pytest.mark.parametrize('input, expected', [
     (once_missing_mode, 'ERROR: "mode" not in config.\n')
 ])
-def test_required_keys(input, expected, capsys, rsync_found):
+def test_required_keys(input, expected, capsys, rsync_found, plugins):
     with pytest.raises(SystemExit):
-        PLUGINS['rsync'](input)
+        plugins['rsync'](input)
 
     out, err = capsys.readouterr()
 
     assert out == expected
 
 
-def test_required_executables(rsync_not_found, capsys):
+def test_required_executables(rsync_not_found, capsys, plugins):
     with pytest.raises(SystemExit):
-        PLUGINS['rsync'](once_input)
+        plugins['rsync'](once_input)
 
     out, err = capsys.readouterr()
 

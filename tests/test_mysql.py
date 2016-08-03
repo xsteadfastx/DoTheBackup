@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 import pytest
 
-from dothebackup import PLUGINS
-
 
 @pytest.fixture(autouse=True)
 def mysqldump_executable(monkeypatch):
@@ -49,11 +47,12 @@ def git_executable(monkeypatch):
          'git', 'commit', '-m', '"new dump"']]
     )
 ])
-def test_main_nothing_there_yet(input, expected, nothing_to_commit):
-    assert PLUGINS['mysql'](input) == expected
+def test_main_nothing_there_yet(input, expected, nothing_to_commit, plugins):
+    assert plugins['mysql'](input) == expected
 
 
-def test_main_git_already_cloned_new_dump(tmpdir, something_to_commit):
+def test_main_git_already_cloned_new_dump(tmpdir, something_to_commit,
+                                          plugins):
     tmpdir.mkdir('.git')
 
     input = {
@@ -77,10 +76,11 @@ def test_main_git_already_cloned_new_dump(tmpdir, something_to_commit):
          'git', 'commit', '-m', '"new dump"']
     ]
 
-    assert PLUGINS['mysql'](input) == expected
+    assert plugins['mysql'](input) == expected
 
 
-def test_main_git_already_cloned_nothing_new(tmpdir, nothing_to_commit):
+def test_main_git_already_cloned_nothing_new(tmpdir, nothing_to_commit,
+                                             plugins):
     tmpdir.mkdir('.git')
 
     input = {
@@ -99,4 +99,4 @@ def test_main_git_already_cloned_nothing_new(tmpdir, nothing_to_commit):
          'mydatabase', '>', '{}/mydatabase.sql'.format(str(tmpdir))],
     ]
 
-    assert PLUGINS['mysql'](input) == expected
+    assert plugins['mysql'](input) == expected

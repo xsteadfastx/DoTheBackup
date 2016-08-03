@@ -32,26 +32,6 @@ def test_check_plugin_abort(capsys):
     assert out == 'ERROR: Plugin "foobar" could not be found.\n'
 
 
-def test_builder_skipping(capsys):
-    config = {
-        'backup': {
-            'test': {
-                'type': 'rsync',
-                'mode': 'once',
-                'enabled': False,
-                'source': '/foo/bar',
-                'destination': '/zack/bumm'
-            }
-        }
-    }
-
-    runner.builder(config, name=None)
-
-    out, err = capsys.readouterr()
-
-    assert out == 'skipping test\n'
-
-
 @pytest.mark.parametrize('input,expected', [
     ({'test': [['rsync', '-av', '--delete', '/foo/bar/', '/bumm/zack']]},
      'test\n----\n\n  * rsync -av --delete /foo/bar/ /bumm/zack\n\n\n')
@@ -176,7 +156,3 @@ def test_builder_date(input, expected, today_is_00):
 def test_builder_date_skipping(input, expected, capsys, today_is_00):
     '''Testing stdout print on skipping date.'''
     assert runner.builder(input, name=None) == expected
-
-    out, err = capsys.readouterr()
-
-    assert out == 'skipping test\n'

@@ -1,7 +1,34 @@
 from __future__ import print_function
 from distutils import spawn
 from functools import wraps
+import logging
+import os
 import sys
+
+
+log = logging.getLogger(__name__)
+
+
+def load_plugins():
+    '''Load plugins from plugin directory.
+    '''
+    plugins = {}
+    path = os.path.dirname(os.path.realpath(__file__)) + '/plugs'
+
+    # temp extend sys path
+    sys.path.insert(0, path)
+
+    for f in os.listdir(path):
+        fname, ext = os.path.splitext(f)
+        if ext == '.py':
+            mod = __import__(fname)
+            plugins[fname] = mod.main
+            log.debug('added {} plugin'.format(fname))
+
+    # remove temp sys path
+    sys.path.pop(0)
+
+    return plugins
 
 
 def required_keys(key_list):

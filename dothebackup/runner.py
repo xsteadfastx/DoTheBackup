@@ -1,11 +1,16 @@
 from __future__ import print_function
 import datetime
+import logging
 import os
 import subprocess
 import sys
 import yaml
 
-from dothebackup import PLUGINS, tools
+from dothebackup import tools
+from dothebackup.plugins import load_plugins
+
+
+log = logging.getLogger(__name__)
 
 
 def parse_config(configfile):
@@ -37,6 +42,7 @@ def builder(config, name):
     '''
     commands = {}
     today = tools.today()
+    plugins = load_plugins()
 
     for scalar, sequence in config['backup'].items():
 
@@ -48,14 +54,14 @@ def builder(config, name):
                 sys.exit()
 
             if not sequence['enabled']:
-                print('skipping {}'.format(scalar))
+                log.info('skipping {}'.format(scalar))
                 continue
 
             # if days are in config and its not a days defined it will continue
             # the for loop
             if 'days' in sequence.keys():
                 if today not in sequence['days']:
-                    print('skipping {}'.format(scalar))
+                    log.info('skipping {}'.format(scalar))
                     continue
 
         # if there is a name defined and its not the name of the scalar
@@ -67,7 +73,7 @@ def builder(config, name):
         check_plugin(sequence['type'])
 
         # add plugin commands to command dict
-        commands[scalar] = PLUGINS[sequence['type']](sequence)
+        commands[scalar] = plugins[sequence['type']](sequence)
 
     if name and not commands:
         print('ERROR: "{}" could not be found in config.'.format(name))
@@ -104,13 +110,14 @@ def run_commands(commands, test, log_dir):
             os.makedirs(log_dir)
 
         for item in commands.items():
+            log.debug(item)
             name, command_list = item
 
             # collects the return codes of all sub commands
             return_codes = []
 
             # define logfile
-            log = os.path.join(log_dir, '{}.log'.format(name))
+            logfile = os.path.join(log_dir, '{}.log'.format(name))
 
             # run through commands
             first_cmd = True
@@ -126,13 +133,14 @@ def run_commands(commands, test, log_dir):
 
                 # create process
                 command = ' '.join(command)
+                log.debug(command)
                 proc = subprocess.Popen(command,
                                         stdout=subprocess.PIPE,
                                         stderr=subprocess.STDOUT,
                                         shell=True)
 
                 # write logfile
-                with open(log, open_mode) as f:
+                with open(logfile, open_mode) as f:
                     for line in proc.stdout:
                         f.write(line.decode('utf-8'))
 
@@ -147,7 +155,7 @@ def run_commands(commands, test, log_dir):
                 if exitcode != 0:
                     code = 1
 
-            with open(log, 'a') as f:
+            with open(logfile, 'a') as f:
                 finishing_time = datetime.datetime.now()
                 f.write('Finished at: {}\n'.format(
                     finishing_time.strftime("%Y-%m-%d %H:%M"))

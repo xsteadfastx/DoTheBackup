@@ -1,7 +1,5 @@
 import pytest
 
-from dothebackup import PLUGINS
-
 
 @pytest.fixture
 def dot_git_exists(monkeypatch):
@@ -20,14 +18,14 @@ def git_executable(monkeypatch):
     'https://github.com/xsteadfastx/DoTheBackup.git',
     'git@github.com:xsteadfastx/DoTheBackup.git'
 ])
-def test_main_not_cloned_yet(source):
+def test_main_not_cloned_yet(source, plugins):
     config = {
         'type': 'git',
         'source': source,
         'destination': '/foo/bar'
     }
 
-    assert PLUGINS['git'](config) == [
+    assert plugins['git'](config) == [
         ['git', 'clone', source, '/foo/bar'],
         ['cd', '/foo/bar', '&&', 'git', 'pull']
     ]
@@ -37,13 +35,13 @@ def test_main_not_cloned_yet(source):
     'https://github.com/xsteadfastx/DoTheBackup.git',
     'git@github.com:xsteadfastx/DoTheBackup.git'
 ])
-def test_main_cloned(source, dot_git_exists):
+def test_main_cloned(source, dot_git_exists, plugins):
     config = {
         'type': 'git',
         'source': source,
         'destination': '/foo/bar'
     }
 
-    assert PLUGINS['git'](config) == [
+    assert plugins['git'](config) == [
         ['cd', '/foo/bar', '&&', 'git', 'pull']
     ]

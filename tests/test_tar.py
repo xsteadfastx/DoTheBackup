@@ -1,7 +1,5 @@
 import pytest
 
-from dothebackup import PLUGINS
-
 
 @pytest.fixture
 def tar_found(monkeypatch):
@@ -31,6 +29,6 @@ def tar_found(monkeypatch):
       'destination': '/bar/zonk.tar.gz'},
      [['tar', '-vcp', '-z', '-f', '/bar/zonk.tar.gz', '/foo/bar']])
 ])
-def test_main(input, expected, tar_found):
+def test_main(input, expected, tar_found, plugins):
     '''Test created command list.'''
-    assert PLUGINS['tar'](input) == expected
+    assert plugins['tar'](input) == expected

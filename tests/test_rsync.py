@@ -5,7 +5,7 @@ import pytest
 import shutil
 import yaml
 
-from dothebackup import PLUGINS, runner
+from dothebackup import runner
 
 
 # GLOBAL VARIABLES
@@ -189,5 +189,5 @@ def test_mode_month(fake_data):
     (once_exclude_input, once_exclude_expected),
     (once_ssh_input, once_ssh_expected)
 ])
-def test_main(input, expected, rsync_found):
-    assert PLUGINS['rsync'](input) == expected
+def test_main(input, expected, rsync_found, plugins):
+    assert plugins['rsync'](input) == expected
