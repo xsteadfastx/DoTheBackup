@@ -1,5 +1,7 @@
 import pytest
 
+from dothebackup.plugins import load_plugins
+
 
 once_input = {
     'type': 'rsync',
@@ -34,3 +36,15 @@ def test_required_executables(rsync_not_found, capsys, plugins):
     out, err = capsys.readouterr()
 
     assert out == 'ERROR: Please install rsync.\n'
+
+
+@pytest.mark.parametrize('input', [
+    ('rsync'),
+    ('tar'),
+    ('git'),
+    ('github'),
+    ('slapcat'),
+    ('mysql')
+])
+def test_load_plugins(input):
+    assert input in load_plugins().keys()
