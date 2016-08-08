@@ -39,3 +39,9 @@ Here's an example::
           - /home
           - /src
         destination: /media/backup/archives/foo.tar.gz
+
+API
+---
+
+.. automodule:: dothebackup.plugs.tar
+     :members:

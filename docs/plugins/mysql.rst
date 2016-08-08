@@ -78,3 +78,9 @@ If you only want the BACKUPUSER to have permissions to one database, you can mod
 Thanks to `Ben Cane`_ for that information.
 
 .. _Ben Cane: http://bencane.com/2011/12/12/creating-a-read-only-backup-user-for-mysqldump/
+
+API
+---
+
+.. automodule:: dothebackup.plugs.mysql
+     :members:

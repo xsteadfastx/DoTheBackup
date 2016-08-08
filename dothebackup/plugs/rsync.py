@@ -1,10 +1,23 @@
 import arrow
+import logging
 import os
 
 from dothebackup import plugins
 
 
+log = logging.getLogger(__name__)
+
+
 def normalize_path(path):
+    """Returns a normalized path.
+
+    Rsync needs a normalized path and special handing if its a ssh path.
+
+    :param path: Path to normalize
+    :type path: str
+    :returns: Normalized path
+    :rtype: str
+    """
     if '@' in path:
         split_path = path.split(':')
         split_path[1] = os.path.normpath(split_path[1])
@@ -18,6 +31,13 @@ def normalize_path(path):
 @plugins.required_executables(['rsync'])
 @plugins.required_keys(['source', 'destination', 'mode'])
 def main(config):
+    """Command builder.
+
+    :param config: config snippet for this plugin
+    :type config: dict
+    :returns: Commands to create the backup
+    :rtype: list
+    """
     # create time variables
     now = arrow.utcnow()
     today_day_of_month = now.format('DD')

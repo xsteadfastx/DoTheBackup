@@ -63,3 +63,9 @@ It supports ssh for transfering data to remote hosts. For example::
         destination: ssh://foo@remotehost:/media/backup/documents
 
 Be sure that you are allowed to connect and ssh-keys are exchanged.
+
+API
+---
+
+.. automodule:: dothebackup.plugs.rsync
+     :members:

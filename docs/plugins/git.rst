@@ -28,3 +28,9 @@ Here's an example::
         enabled: yes
         source: https://github.com/xsteadfastx/DoTheBackup.git
         destination: /media/backup/repos/dothebackup
+
+API
+---
+
+.. automodule:: dothebackup.plugs.git
+     :members:

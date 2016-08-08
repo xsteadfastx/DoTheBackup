@@ -150,6 +150,8 @@ def run_commands(commands, test, log_dir):
             log.debug('item: {}'.format(item))
             name, command_list = item
 
+            log.info('started item {}'.format(name))
+
             # collects the return codes of all sub commands
             return_codes = []
 
@@ -172,18 +174,16 @@ def run_commands(commands, test, log_dir):
                 # create process
                 command = ' '.join(command)
                 log.debug('command: {}'.format(command))
-
-                log.debug('start subprocess')
                 proc = subprocess.Popen(
                     command,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     shell=True
                 )
-                log.debug('stop subprocess')
+                log.debug('done with command')
 
                 # write logfile
-                log.debug('write log: {}'.format(logfile))
+                log.debug('write logfile: {}'.format(logfile))
                 with open(logfile, open_mode) as f:
                     for line in proc.stdout:
                         f.write(line.decode('utf-8'))
@@ -214,7 +214,9 @@ def run_commands(commands, test, log_dir):
                         (finishing_time - starting_time).total_seconds())
                 )
                 f.write('Exit code: {}\n'.format(code))
-            log.debug('done')
+            log.debug('metadata done')
+
+            log.info('done with item {}'.format(name))
 
 
 def get_started(configfile, name, test):
@@ -232,10 +234,15 @@ def get_started(configfile, name, test):
     """
     # read config
     config = parse_config(configfile)
+    log.info('parsed config')
 
     # if backup and log_dir is not in config it will abort
     check_config_keys(config, ['backup', 'log_dir'])
+    log.info('checked config')
 
     # get everything started
     commands = builder(config, name=name)
+    log.info('built commands')
+
+    log.info('run commands')
     run_commands(commands, test=test, log_dir=config['log_dir'])

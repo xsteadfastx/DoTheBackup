@@ -9,6 +9,13 @@ log = logging.getLogger(__name__)
 
 
 def get_repos(username):
+    """Create a GET request on the github api to get all repos from a user.
+
+    :param username: github username
+    :type username: str
+    :returns: Full JSON dictionary of user repos from github
+    :rtype: dict
+    """
     r = requests.get('https://api.github.com/users/{}/repos'.format(username))
 
     log.info('got repos from github api')
@@ -20,6 +27,13 @@ def get_repos(username):
 @plugins.required_executables(['git'])
 @plugins.required_keys(['username', 'destination'])
 def main(config):
+    """Command builder.
+
+    :param config: config snippet for this plugin
+    :type config: dict
+    :returns: Commands to create the backup
+    :rtype: list
+    """
     commands = []
 
     # walk through the github repos

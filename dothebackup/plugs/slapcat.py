@@ -1,11 +1,23 @@
+import logging
+
 from os.path import join
 
 from dothebackup import plugins, utils
 
 
+log = logging.getLogger(__name__)
+
+
 @plugins.required_executables(['slapcat'])
 @plugins.required_keys(['destination', 'mode'])
 def main(config):
+    """Command builder.
+
+    :param config: config snippet for this plugin
+    :type config: dict
+    :returns: Commands to create the backup
+    :rtype: list
+    """
     commands = []
 
     destination = config['destination']

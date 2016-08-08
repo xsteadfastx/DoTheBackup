@@ -1,12 +1,24 @@
+import logging
+
 from os import path
 
 from dothebackup import plugins, utils
+
+
+log = logging.getLogger(__name__)
 
 
 @plugins.required_executables(['mysqldump', 'git'])
 @plugins.required_keys(['mode', 'server', 'username', 'password', 'database',
                         'destination'])
 def main(config):
+    """Command builder.
+
+    :param config: config snippet for this plugin
+    :type config: dict
+    :returns: Commands to create the backup
+    :rtype: list
+    """
     commands = []
 
     destination = config['destination']

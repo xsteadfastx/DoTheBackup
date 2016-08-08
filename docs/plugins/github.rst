@@ -28,3 +28,9 @@ Here's an example::
         enabled: yes
         username: xsteadfastx
         destination: /media/backup/github
+
+API
+---
+
+.. automodule:: dothebackup.plugs.github
+     :members:

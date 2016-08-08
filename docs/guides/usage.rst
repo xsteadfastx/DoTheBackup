@@ -8,10 +8,11 @@ Usage
       Commandline interface.
 
     Options:
-      --name TEXT  Run a specific job from the config.
-      --test     Only prints the created commands that would be used.
-      --version  Show the version and exit.
-      --help     Show this message and exit.
+      -n, --name TEXT       Run a specific job from the config.
+      -t, --test            Only prints the created commands that would be used.
+      --debug [debug|info]  Debug or verbose messages.
+      --version             Show the version and exit.
+      --help                Show this message and exit.
 
 
 First you have to create a config file. Its formatted in `YAML`_. The required keys are:

@@ -24,6 +24,7 @@ def absolutenormpath(path):
 
 def today():
     """Returns todays day string.
+
     :returns: Today day string
     :rtype: str
     """

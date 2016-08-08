@@ -9,10 +9,11 @@ A small tool to run backups in different ways. Its pluggable. Read more in the `
       Commandline interface.
 
     Options:
-      --name TEXT  Run a specific job from the config.
-      --test     Only prints the created commands that would be used.
-      --version  Show the version and exit.
-      --help     Show this message and exit.
+      -n, --name TEXT       Run a specific job from the config.
+      -t, --test            Only prints the created commands that would be used.
+      --debug [debug|info]  Debug or verbose messages.
+      --version             Show the version and exit.
+      --help                Show this message and exit.
 
 
 .. |Build Status| image:: https://travis-ci.org/xsteadfastx/DoTheBackup.svg?branch=master

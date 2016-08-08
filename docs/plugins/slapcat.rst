@@ -40,3 +40,9 @@ Restore
 Example::
 
     slapadd -l /media/backup/myldap/backup.ldif
+
+API
+---
+
+.. automodule:: dothebackup.plugs.slapcat
+     :members:
