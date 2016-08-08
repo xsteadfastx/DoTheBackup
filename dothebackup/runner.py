@@ -106,11 +106,14 @@ def run_commands(commands, test, log_dir):
     else:
         # normalize log_dir and create it if its not existing
         log_dir = os.path.abspath(os.path.normpath(log_dir))
+        log.debug('logdir: {}'.format(log_dir))
+
         if not os.path.exists(log_dir):
+            log.debug('create: {}'.format(log_dir))
             os.makedirs(log_dir)
 
         for item in commands.items():
-            log.debug(item)
+            log.debug('item: {}'.format(item))
             name, command_list = item
 
             # collects the return codes of all sub commands
@@ -118,6 +121,7 @@ def run_commands(commands, test, log_dir):
 
             # define logfile
             logfile = os.path.join(log_dir, '{}.log'.format(name))
+            log.debug('logfile: {}'.format(logfile))
 
             # run through commands
             first_cmd = True
@@ -133,28 +137,39 @@ def run_commands(commands, test, log_dir):
 
                 # create process
                 command = ' '.join(command)
-                log.debug(command)
-                proc = subprocess.Popen(command,
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.STDOUT,
-                                        shell=True)
+                log.debug('command: {}'.format(command))
+
+                log.debug('start subprocess')
+                proc = subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    shell=True
+                )
+                log.debug('stop subprocess')
 
                 # write logfile
+                log.debug('write log: {}'.format(logfile))
                 with open(logfile, open_mode) as f:
                     for line in proc.stdout:
                         f.write(line.decode('utf-8'))
 
                     proc.wait()
+                log.debug('done writing logfile')
 
                 # store returncode
-                return_codes.append(proc.returncode)
+                returncode = proc.returncode
+                log.debug('returncode: {}'.format(returncode))
+                return_codes.append(returncode)
 
             # write exit code
             code = 0
             for exitcode in return_codes:
                 if exitcode != 0:
                     code = 1
+            log.debug('exitcode: {}'.format(code))
 
+            log.debug('write metadata')
             with open(logfile, 'a') as f:
                 finishing_time = datetime.datetime.now()
                 f.write('Finished at: {}\n'.format(
@@ -165,6 +180,7 @@ def run_commands(commands, test, log_dir):
                         (finishing_time - starting_time).total_seconds())
                 )
                 f.write('Exit code: {}\n'.format(code))
+            log.debug('done')
 
 
 def get_started(configfile, name, test):
