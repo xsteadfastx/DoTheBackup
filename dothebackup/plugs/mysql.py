@@ -1,6 +1,6 @@
 from os import path
 
-from dothebackup import plugins, tools
+from dothebackup import plugins, utils
 
 
 @plugins.required_executables(['mysqldump', 'git'])
@@ -14,7 +14,7 @@ def main(config):
     # if commiting every dump to a git repo it has to init first if
     # its not there
     if config['mode'] == 'git':
-        cloned_yet = tools.git_cloned_yet(destination)
+        cloned_yet = utils.git_cloned_yet(destination)
         if not cloned_yet:
             commands.append(['cd', destination, '&&', 'git', 'init'])
 
@@ -26,14 +26,14 @@ def main(config):
                      config['database'],
                      '>',
                      path.join(
-                         tools.absolutenormpath(destination),
+                         utils.absolutenormpath(destination),
                          '{}.sql'.format(config['database']))])
 
     # commit if git mode is used
     if config['mode'] == 'git':
 
         # only commit if there is something to be commited
-        if not cloned_yet or tools.git_something_to_commit(destination):
+        if not cloned_yet or utils.git_something_to_commit(destination):
 
             commands.append(['cd', destination,
                              '&&',

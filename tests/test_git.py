@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def dot_git_exists(monkeypatch):
-    monkeypatch.setattr('dothebackup.tools.git_cloned_yet',
+    monkeypatch.setattr('dothebackup.utils.git_cloned_yet',
                         lambda x: True)
 
 

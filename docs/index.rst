@@ -10,5 +10,5 @@ Contents:
 
    guides/index
    plugins/index
+   api
    changelog
-

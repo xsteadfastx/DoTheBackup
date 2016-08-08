@@ -1,7 +1,7 @@
 import os
 
 from dothebackup import plugins
-from dothebackup.tools import absolutenormpath
+from dothebackup.utils import absolutenormpath
 
 
 @plugins.required_executables(['tar'])

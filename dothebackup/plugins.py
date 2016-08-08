@@ -1,4 +1,3 @@
-from __future__ import print_function
 from distutils import spawn
 from functools import wraps
 import logging
@@ -10,8 +9,10 @@ log = logging.getLogger(__name__)
 
 
 def load_plugins():
-    '''Load plugins from plugin directory.
-    '''
+    """Load plugins from plugin directory.
+
+    This function reads the plugs directory and loads all plugins.
+    """
     plugins = {}
     path = os.path.dirname(os.path.realpath(__file__)) + '/plugs'
 
@@ -32,8 +33,13 @@ def load_plugins():
 
 
 def required_keys(key_list):
-    '''Decorator to check against key list.
-    '''
+    """Decorator to check against key list.
+
+    :param key_list: List of keys that needs to be in the config
+    :type key_list: list
+    :returns: Decorated function
+    :rtype: function
+    """
     def decorated_function(func):
 
         @wraps(func)
@@ -44,13 +50,20 @@ def required_keys(key_list):
                     sys.exit()
 
             return func(config)
+
         return func_wrapper
+
     return decorated_function
 
 
 def required_executables(dep_list):
-    '''Decorator to check required executables.
-    '''
+    """Decorator to check required executables.
+
+    :param dep_list: Dependency list
+    :type dep_list: list
+    :returns: Decorated function
+    :rtype: function
+    """
     def decorated_function(func):
 
         @wraps(func)
@@ -61,5 +74,7 @@ def required_executables(dep_list):
                     sys.exit()
 
             return func(config)
+
         return func_wrapper
+
     return decorated_function

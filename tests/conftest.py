@@ -34,17 +34,17 @@ def fake_data(tmpdir):
 
 @pytest.fixture
 def today_is_00(monkeypatch):
-    monkeypatch.setattr('dothebackup.tools.today',
+    monkeypatch.setattr('dothebackup.utils.today',
                         lambda: '00')
 
 
 @pytest.fixture
 def something_to_commit(monkeypatch):
-    monkeypatch.setattr('dothebackup.tools.subprocess.check_output',
+    monkeypatch.setattr('dothebackup.utils.subprocess.check_output',
                         lambda path, shell: b'A  foo/bar.py')
 
 
 @pytest.fixture
 def nothing_to_commit(monkeypatch):
-    monkeypatch.setattr('dothebackup.tools.subprocess.check_output',
+    monkeypatch.setattr('dothebackup.utils.subprocess.check_output',
                         lambda path, shell: b'')

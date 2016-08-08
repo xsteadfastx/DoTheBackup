@@ -1,4 +1,3 @@
-from __future__ import print_function
 import datetime
 import logging
 import os
@@ -6,7 +5,7 @@ import subprocess
 import sys
 import yaml
 
-from dothebackup import tools
+from dothebackup import utils
 from dothebackup.plugins import load_plugins
 
 
@@ -14,14 +13,24 @@ log = logging.getLogger(__name__)
 
 
 def parse_config(configfile):
-    '''Read config file.
-    '''
+    """Read config file.
+
+    :param configfile: YAML config file
+    :type configfile: _io.TextIOWrapper
+    :returns: loaded configfile
+    :rtype: dict
+    """
     return yaml.load(configfile)
 
 
 def check_config_keys(config, key_list):
-    '''Aborts if keys are not set in config.
-    '''
+    """Aborts if keys are not set in config.
+
+    :param config: Config
+    :param key_list: List of used keys
+    :type config: dict
+    :type key_list: list
+    """
     for key in key_list:
         if key not in config.keys():
             print('ERROR: "{}" is missing in the config.'.format(key))
@@ -29,19 +38,29 @@ def check_config_keys(config, key_list):
 
 
 def check_plugin(name):
-    '''Aborts and throw an error if plugin is not there as defined as type
+    """Aborts and throw an error if plugin is not there as defined as type
     in config.
-    '''
+
+    :param name: Name of plugin that is defined in the config
+    :type name: str
+    """
     if name not in sys.modules.keys():
         print('ERROR: Plugin "{}" could not be found.'.format(name))
         sys.exit()
 
 
 def builder(config, name):
-    '''Builds a dict of commands.
-    '''
+    """Builds a dict of commands.
+
+    :param config: YAML config
+    :param name: Name of a specific job to run
+    :type config: str
+    :type name: str
+    :returns: A dict with all commands needed commands
+    :rtype: dict
+    """
     commands = {}
-    today = tools.today()
+    today = utils.today()
     plugins = load_plugins()
 
     for scalar, sequence in config['backup'].items():
@@ -74,6 +93,7 @@ def builder(config, name):
 
         # add plugin commands to command dict
         commands[scalar] = plugins[sequence['type']](sequence)
+        log.debug('added command: {}'.format(commands[scalar]))
 
     if name and not commands:
         print('ERROR: "{}" could not be found in config.'.format(name))
@@ -83,8 +103,11 @@ def builder(config, name):
 
 
 def print_commands(commands):
-    '''Prints the commands that would be used.
-    '''
+    """Prints the commands that would be used.
+
+    :param commands: Command dictionary
+    :type commands: dict
+    """
     for item in commands.items():
         print(item[0])
         for character in item[0]:
@@ -96,8 +119,19 @@ def print_commands(commands):
 
 
 def run_commands(commands, test, log_dir):
-    '''Running the commands.
-    '''
+    """Running the commands.
+
+    The actual runner. It will take the commands dictionary and run it one
+    after another. There is also a test key. With this enabled it will only
+    print the commands it would run.
+
+    :param commands: Commands dictionary
+    :param test: If test the commands only will be printed
+    :param log_dir: Dictionary for logfiles
+    :type commands: dict
+    :type test: bool
+    :type log_dir: str
+    """
     # in test mode it will print all the commands it would run for
     # each item in the config
     if test:
@@ -184,6 +218,18 @@ def run_commands(commands, test, log_dir):
 
 
 def get_started(configfile, name, test):
+    """The entrypoint for the UI.
+
+    This is used to get everything started up. It will read the config,
+    check the keys, build the command dictionary and run them.
+
+    :param configfile: The config file
+    :param name: A name of a specific job
+    :param test: Switch for only printing the commands
+    :type configfile: _io.TextIOWrapper
+    :type name: str
+    :type test: bool
+    """
     # read config
     config = parse_config(configfile)
 
