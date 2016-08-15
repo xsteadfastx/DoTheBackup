@@ -1,7 +1,10 @@
-.PHONY: build clean editable pypi test
+.PHONY: build changelog clean editable pypi test
 
 build:
 	python setup.py sdist bdist_wheel
+
+changelog:
+	gitchangelog > docs/changelog.rst
 
 clean:
 	find . -name '*.pyc' -exec rm -f {} +

@@ -10,7 +10,7 @@ def _read(fn):
 
 setup(
     name='dothebackup',
-    version='0.2.0',
+    version='0.2.1',
     description='backup tool with plugins',
     author='Marvin Steadfast',
     author_email='marvin@xsteadfastx.org',

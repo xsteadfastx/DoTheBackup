@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.2.1 (2016-08-15)
+-------------------
+
+- Adds log for startup and finishing dothebackup. [Philipp Weißmann]
+
+- New changelog. [Marvin Steadfast]
+
 v0.2.0 (2016-08-08)
 -------------------
 
@@ -19,10 +26,6 @@ v0.1.9 (2016-07-29)
 
 - 0.1.9 release. [Marvin Steadfast]
 
-- Merge pull request #5 from derphilipp/patch-1. [xsteadfastx]
-
-  Adds newline seperators to log file
-
 - Adds newline seperators to log file. [Philipp Weißmann]
 
 v0.1.8 (2016-07-28)
@@ -30,19 +33,11 @@ v0.1.8 (2016-07-28)
 
 - 0.1.8 release. [Marvin Steadfast]
 
-- Merge pull request #4 from derphilipp/master. [xsteadfastx]
-
-  Adds finishing date and total runtime to log
-
 - Fixes pep violations (line length) [Philipp Weißmann]
 
 - Adds finishing date and total runtime to log. [Philipp Weißmann]
 
 - Fixed typo. [Marvin Steadfast]
-
-- Merge pull request #2 from derphilipp/fix_typo. [xsteadfastx]
-
-  Fixes typo in Readme
 
 - Fixes typo in Readme. [Philipp Weißmann]
 
@@ -149,11 +144,6 @@ v0.1 (2015-10-06)
   Its now installable through pip. Also it uses plugins now. All you need
   is a plugin that returns a list if commands that get executed. Right now
   only the rsync plugin is there.
-
-- Merge pull request #1 from derphilipp/feature/rsync_week.
-  [xsteadfastx]
-
-  Adds option to keep backups for a week (additional to a month)
 
 - Adds option to keep backups for a week (additional to a month)
   [Philipp Weißmann]
