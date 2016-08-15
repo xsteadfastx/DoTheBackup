@@ -232,6 +232,8 @@ def get_started(configfile, name, test):
     :type name: str
     :type test: bool
     """
+    log.info('dothebackup starting')
+
     # read config
     config = parse_config(configfile)
     log.info('parsed config')
@@ -246,3 +248,4 @@ def get_started(configfile, name, test):
 
     log.info('run commands')
     run_commands(commands, test=test, log_dir=config['log_dir'])
+    log.info('dothebackup done')
