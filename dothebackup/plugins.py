@@ -1,9 +1,9 @@
-from distutils import spawn
-from functools import wraps
 import logging
 import os
 import sys
 
+from distutils import spawn
+from functools import wraps
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ def required_keys(key_list):
             for key in key_list:
                 if key not in config.keys():
                     print('ERROR: "{}" not in config.'.format(key))
-                    sys.exit()
+                    sys.exit(1)
 
             return func(config)
 
@@ -71,7 +71,7 @@ def required_executables(dep_list):
             for dep in dep_list:
                 if not spawn.find_executable(dep):
                     print('ERROR: Please install {}.'.format(dep))
-                    sys.exit()
+                    sys.exit(1)
 
             return func(config)
 

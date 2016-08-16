@@ -26,7 +26,9 @@ Its also needed to define a ``mode``. Here is a list:
 
 Here's a example::
 
-   log_dir: /var/log/dothebackup
+   logs:
+     dir: /var/log/dothebackup
+     keep: 10
    backup:
      myldap:
        enabled: yes

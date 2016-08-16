@@ -103,7 +103,10 @@ once_ssh_expected = [
 # ---------------
 def config_once(temp_dir):
     return {
-        'log_dir': os.path.join(temp_dir, 'logs'),
+        'logs': {
+            'dir': os.path.join(temp_dir, 'logs'),
+            'keep': 10,
+        },
         'backup': {
             'test-once': {
                 'type': 'rsync',
@@ -118,7 +121,10 @@ def config_once(temp_dir):
 
 def config_link_dest(temp_dir):
     return {
-        'log_dir': os.path.join(temp_dir, 'logs'),
+        'logs': {
+            'dir': os.path.join(temp_dir, 'logs'),
+            'keep': 10,
+        },
         'backup': {
             'test-once': {
                 'type': 'rsync',

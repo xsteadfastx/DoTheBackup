@@ -1,11 +1,11 @@
 import datetime
 import logging
-import os
 import subprocess
 import sys
 import yaml
 
 from dothebackup import utils
+from dothebackup.logger import Logger
 from dothebackup.plugins import load_plugins
 
 
@@ -34,7 +34,7 @@ def check_config_keys(config, key_list):
     for key in key_list:
         if key not in config.keys():
             print('ERROR: "{}" is missing in the config.'.format(key))
-            sys.exit()
+            sys.exit(1)
 
 
 def check_plugin(name):
@@ -46,7 +46,7 @@ def check_plugin(name):
     """
     if name not in sys.modules.keys():
         print('ERROR: Plugin "{}" could not be found.'.format(name))
-        sys.exit()
+        sys.exit(1)
 
 
 def builder(config, name):
@@ -97,7 +97,7 @@ def builder(config, name):
 
     if name and not commands:
         print('ERROR: "{}" could not be found in config.'.format(name))
-        sys.exit()
+        sys.exit(1)
 
     return commands
 
@@ -118,7 +118,7 @@ def print_commands(commands):
         print('\n')
 
 
-def run_commands(commands, test, log_dir):
+def run_commands(commands, test, log_dir, log_keep):
     """Running the commands.
 
     The actual runner. It will take the commands dictionary and run it one
@@ -128,9 +128,11 @@ def run_commands(commands, test, log_dir):
     :param commands: Commands dictionary
     :param test: If test the commands only will be printed
     :param log_dir: Dictionary for logfiles
+    :param log_keep: How many logs to keep from one job
     :type commands: dict
     :type test: bool
     :type log_dir: str
+    :type log_keep: int
     """
     # in test mode it will print all the commands it would run for
     # each item in the config
@@ -138,14 +140,6 @@ def run_commands(commands, test, log_dir):
         print_commands(commands)
 
     else:
-        # normalize log_dir and create it if its not existing
-        log_dir = os.path.abspath(os.path.normpath(log_dir))
-        log.debug('logdir: {}'.format(log_dir))
-
-        if not os.path.exists(log_dir):
-            log.debug('create: {}'.format(log_dir))
-            os.makedirs(log_dir)
-
         for item in commands.items():
             log.debug('item: {}'.format(item))
             name, command_list = item
@@ -155,21 +149,16 @@ def run_commands(commands, test, log_dir):
             # collects the return codes of all sub commands
             return_codes = []
 
-            # define logfile
-            logfile = os.path.join(log_dir, '{}.log'.format(name))
-            log.debug('logfile: {}'.format(logfile))
+            # define logger for stdout logging
+            logger = Logger(
+                utils.absolutenormpath(log_dir),
+                name,
+                log_keep
+            )
 
             # run through commands
-            first_cmd = True
             starting_time = datetime.datetime.now()
             for command in command_list:
-
-                # define mode to open file. its different on the first run
-                if first_cmd:
-                    open_mode = 'w'
-                    first_cmd = False
-                else:
-                    open_mode = 'a'
 
                 # create process
                 command = ' '.join(command)
@@ -183,10 +172,10 @@ def run_commands(commands, test, log_dir):
                 log.debug('done with command')
 
                 # write logfile
-                log.debug('write logfile: {}'.format(logfile))
-                with open(logfile, open_mode) as f:
+                log.debug('write to logfile')
+                with logger.logfile() as logfile:
                     for line in proc.stdout:
-                        f.write(line.decode('utf-8'))
+                        logfile.write(line.decode('utf-8'))
 
                     proc.wait()
                 log.debug('done writing logfile')
@@ -204,16 +193,19 @@ def run_commands(commands, test, log_dir):
             log.debug('exitcode: {}'.format(code))
 
             log.debug('write metadata')
-            with open(logfile, 'a') as f:
+            with logger.logfile() as logfile:
+
                 finishing_time = datetime.datetime.now()
-                f.write('Finished at: {}\n'.format(
+                logfile.write('Finished at: {}\n'.format(
                     finishing_time.strftime("%Y-%m-%d %H:%M"))
                 )
-                f.write(
+
+                logfile.write(
                     'Total runtime: {} seconds.\n'.format(
                         (finishing_time - starting_time).total_seconds())
                 )
-                f.write('Exit code: {}\n'.format(code))
+
+                logfile.write('Exit code: {}\n'.format(code))
             log.debug('metadata done')
 
             log.info('done with item {}'.format(name))
@@ -235,17 +227,23 @@ def get_started(configfile, name, test):
     log.info('dothebackup starting')
 
     # read config
+    log.info('parse config')
     config = parse_config(configfile)
-    log.info('parsed config')
 
     # if backup and log_dir is not in config it will abort
-    check_config_keys(config, ['backup', 'log_dir'])
-    log.info('checked config')
+    log.info('check config')
+    check_config_keys(config, ['backup', 'logs'])
+    check_config_keys(config['logs'], ['dir', 'keep'])
 
     # get everything started
+    log.info('build commands')
     commands = builder(config, name=name)
-    log.info('built commands')
 
     log.info('run commands')
-    run_commands(commands, test=test, log_dir=config['log_dir'])
+    run_commands(
+        commands,
+        test=test,
+        log_dir=config['logs']['dir'],
+        log_keep=config['logs']['keep']
+    )
     log.info('dothebackup done')

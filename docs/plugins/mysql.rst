@@ -34,7 +34,9 @@ Its also needed to define a ``mode``. Here is a list:
 
 Here's an example::
 
-    log_dir: /var/log/dothebackup
+    logs:
+      dir: /var/log/dothebackup
+      keep: 10
     backup:
       mydatabase:
         enabled: yes

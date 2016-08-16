@@ -35,7 +35,9 @@ It supports rsync ``exclude`` and ``include`` patterns as list.
 
 Here's an example::
 
-    log_dir: /var/log/dothebackup
+    logs:
+      dir: /var/log/dothebackup
+      keep: 10
     backup:
       my_documents:
         type: rsync
@@ -53,7 +55,9 @@ This would save the source to ``/media/backup/documents/27`` for example and rot
 
 It supports ssh for transfering data to remote hosts. For example::
 
-    log_dir: /var/log/dothebackup
+    logs:
+      dir: /var/log/dothebackup
+      keep: 10
     backup:
       my_documents:
         type: rsync

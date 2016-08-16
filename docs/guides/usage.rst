@@ -17,10 +17,13 @@ Usage
 
 First you have to create a config file. Its formatted in `YAML`_. The required keys are:
 
-- **log_dir**:
-  The destination where the logs will be saved.
-- **backup**:
-  Here you define all the things you want to backup.
+- **logs**: The log configuration.
+
+  - **dir**: The directory where the logfiles will be saved.
+
+  - **keep**: The numbers of individual job logs to keep.
+
+- **backup**: Here you define all the things you want to backup.
 
 Be sure that you have the key ``enabled`` set to ``yes``. Else that part of the config will be ignored on a normal run.
 
@@ -41,7 +44,9 @@ Example
 
 ::
 
-    log_dir: /var/log/dothebackup
+    logs:
+      dir: /var/log/dothebackup
+      keep: 10
     backup:
       my_documents:
         type: rsync

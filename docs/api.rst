@@ -8,6 +8,13 @@ runner
      :members:
 
 
+logger
+------
+
+.. automodule:: dothebackup.logger
+     :members:
+
+
 plugins
 -------
 

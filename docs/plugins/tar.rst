@@ -30,7 +30,9 @@ A list of required configuration keys:
 
 Here's an example::
 
-    log_dir: /var/log/dothebackup
+    logs:
+      dir: /var/log/dothebackup
+      keep: 10
     backup:
       foo:
         type: tar

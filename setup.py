@@ -24,10 +24,11 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        'Click',
-        'pyyaml',
-        'arrow',
-        'requests'
+        'attrs>=16.0.0',
+        'Click>=6.0.0',
+        'pyyaml>=3',
+        'arrow>=0.8.0',
+        'requests>=2.0.0'
     ],
     entry_points={
         'console_scripts': [
