@@ -1,6 +1,21 @@
 Changelog
 =========
 
+v1.0.1 (2016-08-18)
+-------------------
+
+Fix
+~~~
+
+- Logs finally rotate. [Marvin Steadfast]
+
+  forgot to call the rotate function in the runner and fixed a bug caused
+  by the log numbering order. logs are now numbered like::
+
+      foo.log
+      foo.log.0001
+      foo.log.0002
+
 v1.0.0 (2016-08-18)
 -------------------
 
