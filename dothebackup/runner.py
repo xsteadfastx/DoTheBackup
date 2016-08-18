@@ -156,6 +156,12 @@ def run_commands(commands, test, log_dir, log_keep):
                 log_keep
             )
 
+            # be sure that there is the log dir
+            logger.create_log_dir()
+
+            # roate logfiles
+            logger.rotate()
+
             # run through commands
             starting_time = datetime.datetime.now()
             for command in command_list:

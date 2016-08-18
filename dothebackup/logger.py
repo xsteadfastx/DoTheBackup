@@ -46,7 +46,7 @@ class Logger(object):
 
         gets::
 
-            foo.log.1
+            foo.log.0001
 
         and so on.
         """
@@ -78,7 +78,10 @@ class Logger(object):
                     ),
                     os.path.join(
                         self.log_dir,
-                        '{}.log.{}'.format(self.name, number + 1)
+                        '{name}.log.{number:04d}'.format(
+                            name=self.name,
+                            number=number + 1
+                        )
                     )
                 )
 
@@ -92,7 +95,7 @@ class Logger(object):
                         ),
                         os.path.join(
                             self.log_dir,
-                            '{}.log.1'.format(self.name)
+                            '{}.log.0001'.format(self.name)
                         )
                     )
 
@@ -108,15 +111,17 @@ class Logger(object):
         :yields: Opened logfile
         :Yield type: _io.TextIOWrapper
         """
-        # if log_dir does not exists, create it
-        debuglog.debug('log_dir: {}'.format(self.log_dir))
-
-        if not os.path.exists(self.log_dir):
-            debuglog.debug('create: {}'.format(self.log_dir))
-            os.makedirs(self.log_dir)
-
         f = open('{}.log'.format(os.path.join(self.log_dir, self.name)), 'a')
 
         yield f
 
         f.close()
+
+    def create_log_dir(self):
+        """Create logdir if its not there.
+        """
+        debuglog.debug('log_dir: {}'.format(self.log_dir))
+
+        if not os.path.exists(self.log_dir):
+            debuglog.debug('create: {}'.format(self.log_dir))
+            os.makedirs(self.log_dir)

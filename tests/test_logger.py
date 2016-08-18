@@ -8,13 +8,13 @@ from dothebackup.logger import Logger
     (
         [
             'foo.log',
-            'foo.log.1',
-            'foo.log.2',
+            'foo.log.0001',
+            'foo.log.0002',
             'bar.log'
         ],
         [
-            'foo.log.2',
-            'foo.log.1',
+            'foo.log.0002',
+            'foo.log.0001',
             'foo.log'
         ]
     )
@@ -38,30 +38,30 @@ def test__old_logs(logfiles, expected, tmpdir):
             'foo.log'
         ],
         [
-            'foo.log.1'
+            'foo.log.0001'
         ]
     ),
     (
         [
             'foo.log',
-            'foo.log.1',
-            'foo.log.2',
-            'foo.log.3',
-            'foo.log.4',
-            'foo.log.5'
+            'foo.log.0001',
+            'foo.log.0002',
+            'foo.log.0003',
+            'foo.log.0004',
+            'foo.log.0005'
         ],
         [
-            'foo.log.6',
-            'foo.log.5',
-            'foo.log.4',
-            'foo.log.3',
-            'foo.log.2',
-            'foo.log.1',
+            'foo.log.0006',
+            'foo.log.0005',
+            'foo.log.0004',
+            'foo.log.0003',
+            'foo.log.0002',
+            'foo.log.0001',
         ]
     ),
     (
         [
-            'foo.log.10'
+            'foo.log.0010'
         ],
         []
     )
@@ -83,6 +83,7 @@ def test_logfile(tmpdir):
     log_dir = str(tmpdir.join('logs').realpath())
 
     logger = Logger(log_dir, 'foo', 10)
+    logger.create_log_dir()
 
     with logger.logfile() as logfile:
         logfile.write('foo')
