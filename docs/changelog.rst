@@ -1,6 +1,32 @@
 Changelog
 =========
 
+v1.0.0 (2016-08-18)
+-------------------
+
+- Testing and no installations for old python versions. [Marvin
+  Steadfast]
+
+  added more python versions for local tox testing. installations on
+  python versions < python 3.3 will be aborted in setup.py.
+
+- Logger module. [Marvin Steadfast]
+
+  added logger module for better logging of the jobs stdout. it keeps
+  track on rotating old logs and writing to the right logfile.
+
+  the logging part of the config changed. a example::
+
+      logs:
+        dir: /var/log/dothebackup
+        keep: 10
+      backup:
+        ...
+        ...
+        ...
+
+  **keep** defines how many log files to keep.
+
 v0.2.1 (2016-08-15)
 -------------------
 
