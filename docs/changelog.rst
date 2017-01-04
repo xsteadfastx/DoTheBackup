@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v1.0.2 (2017-01-04)
+-------------------
+
+- Replace invalid characters in logging. [Philipp Weißmann]
+
+- Working on Jenkinsfile. [Marvin Steadfast]
+
+- Added Jenkinsfile. [Marvin Steadfast]
+
 v1.0.1 (2016-08-18)
 -------------------
 
