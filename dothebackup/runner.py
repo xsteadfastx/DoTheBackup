@@ -181,7 +181,7 @@ def run_commands(commands, test, log_dir, log_keep):
                 log.debug('write to logfile')
                 with logger.logfile() as logfile:
                     for line in proc.stdout:
-                        logfile.write(line.decode('utf-8'))
+                        logfile.write(line.decode('utf-8', 'replace'))
 
                     proc.wait()
                 log.debug('done writing logfile')
