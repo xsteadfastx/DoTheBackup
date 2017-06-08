@@ -1,20 +1,27 @@
-import arrow
-import helper
 import os
-import pytest
+
 import shutil
-import yaml
 
 from dothebackup import runner
+
+import helper
+
+import pendulum
+
+import pytest
+
+import yaml
 
 
 # GLOBAL VARIABLES
 # ----------------
-now = arrow.utcnow()
-today_day_of_month = now.format('DD')
-yesterday_day_of_month = now.replace(days=-1).format('DD')
-today_day_of_week = now.format('d')
-yesterday_day_of_week = now.replace(days=-1).format('d')
+now = pendulum.utcnow()
+
+today_day_of_month = now.format('%d')
+yesterday_day_of_month = now.yesterday().format('%d')
+
+today_day_of_week = now.format('%w')
+yesterday_day_of_week = now.yesterday().format('%w')
 
 once_input = {
     'type': 'rsync',

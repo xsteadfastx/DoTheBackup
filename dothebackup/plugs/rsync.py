@@ -1,8 +1,10 @@
-import arrow
 import logging
+
 import os
 
 from dothebackup import plugins
+
+import pendulum
 
 
 log = logging.getLogger(__name__)
@@ -39,11 +41,13 @@ def main(config):
     :rtype: list
     """
     # create time variables
-    now = arrow.utcnow()
-    today_day_of_month = now.format('DD')
-    yesterday_day_of_month = now.replace(days=-1).format('DD')
-    today_day_of_week = now.format('d')
-    yesterday_day_of_week = now.replace(days=-1).format('d')
+    now = pendulum.utcnow()
+
+    today_day_of_month = now.format('%d')
+    yesterday_day_of_month = now.yesterday().format('%d')
+
+    today_day_of_week = now.format('%w')
+    yesterday_day_of_week = now.yesterday().format('%w')
 
     # adding basic rsync stuff
     command = ['rsync', '-av', '--delete']
