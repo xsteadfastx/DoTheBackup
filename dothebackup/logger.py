@@ -1,29 +1,28 @@
-import attr
 import logging
+
 import os
 
 from contextlib import contextmanager
+
+from typing import IO, Iterator, List
 
 
 debuglog = logging.getLogger(__name__)
 
 
-@attr.s
 class Logger(object):
     """A logger for handling stdout logging.
 
     :param log_dir: Directory to store logfiles in
     :param name: Name of the backup job
     :param keep: Number of logs to keep
-    :type log_dir: str
-    :type name: str
-    :type keep: int
     """
-    log_dir = attr.ib()
-    name = attr.ib()
-    keep = attr.ib()
+    def __init__(self, log_dir: str, name: str, keep: int) -> None:
+        self.log_dir = log_dir
+        self.name = name
+        self.keep = keep
 
-    def _old_logs(self):
+    def _old_logs(self) -> List[str]:
         """Create a list of old logfiles.
 
         :returns: A list of old logfiles
@@ -35,7 +34,7 @@ class Logger(object):
 
         return list(reversed(sorted(logs)))
 
-    def rotate(self):
+    def rotate(self) -> None:
         """A logfile rotator.
 
         This function moves old logfiles around.
@@ -67,9 +66,9 @@ class Logger(object):
         for log in old_logs:
 
             if len(log.split('.')) == 3:
-                name, extension, number = log.split('.')
+                name, extension, log_number = log.split('.')
 
-                number = int(number)
+                number = int(log_number)
 
                 os.rename(
                     os.path.join(
@@ -100,7 +99,7 @@ class Logger(object):
                     )
 
     @contextmanager
-    def logfile(self):
+    def logfile(self) -> Iterator[IO[str]]:
         """A logfile handler.
 
         This is used in a context to write to a logfile::
@@ -109,7 +108,6 @@ class Logger(object):
                 logfile.write('foobar')
 
         :yields: Opened logfile
-        :Yield type: _io.TextIOWrapper
         """
         f = open('{}.log'.format(os.path.join(self.log_dir, self.name)), 'a')
 
@@ -117,7 +115,7 @@ class Logger(object):
 
         f.close()
 
-    def create_log_dir(self):
+    def create_log_dir(self) -> None:
         """Create logdir if its not there.
         """
         debuglog.debug('log_dir: {}'.format(self.log_dir))

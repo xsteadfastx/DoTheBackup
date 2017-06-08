@@ -1,14 +1,16 @@
 language: python
 python:
-        - 3.5
+        - 3.6
 #branches:
 #        only: master
 env:
         - TOXENV=py33
         - TOXENV=py34
         - TOXENV=py35
+        - TOXENV=py36
         - TOXENV=coverage
         - TOXENV=flake8
+        - TOXENV=mypy
 install:
         - travis_retry sudo apt-get update
         - travis_retry sudo apt-get install rsync

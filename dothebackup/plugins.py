@@ -1,14 +1,23 @@
 import logging
+
 import os
+
 import sys
 
 from distutils import spawn
+
 from functools import wraps
+
+from typing import Callable, Dict, List, Union
+
+
+from dothebackup.types import ConfigType
+
 
 log = logging.getLogger(__name__)
 
 
-def load_plugins():
+def load_plugins() -> Dict[str, Callable]:
     """Load plugins from plugin directory.
 
     This function reads the plugs directory and loads all plugins.
@@ -32,18 +41,16 @@ def load_plugins():
     return plugins
 
 
-def required_keys(key_list):
+def required_keys(key_list: List[str]) -> Callable:
     """Decorator to check against key list.
 
     :param key_list: List of keys that needs to be in the config
-    :type key_list: list
     :returns: Decorated function
-    :rtype: function
     """
-    def decorated_function(func):
+    def decorated_function(func: Callable) -> Callable:
 
         @wraps(func)
-        def func_wrapper(config):
+        def func_wrapper(config: ConfigType) -> Union[Callable, None]:
             for key in key_list:
                 if key not in config.keys():
                     print('ERROR: "{}" not in config.'.format(key))
@@ -56,18 +63,16 @@ def required_keys(key_list):
     return decorated_function
 
 
-def required_executables(dep_list):
+def required_executables(dep_list: List[str]) -> Callable:
     """Decorator to check required executables.
 
     :param dep_list: Dependency list
-    :type dep_list: list
     :returns: Decorated function
-    :rtype: function
     """
-    def decorated_function(func):
+    def decorated_function(func: Callable) -> Callable:
 
         @wraps(func)
-        def func_wrapper(config):
+        def func_wrapper(config: ConfigType) -> Union[Callable, None]:
             for dep in dep_list:
                 if not spawn.find_executable(dep):
                     print('ERROR: Please install {}.'.format(dep))

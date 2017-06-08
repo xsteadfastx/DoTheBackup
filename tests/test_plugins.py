@@ -39,12 +39,13 @@ def test_required_executables(rsync_not_found, capsys, plugins):
 
 
 @pytest.mark.parametrize('input', [
-    ('rsync'),
-    ('tar'),
+    ('borg'),
     ('git'),
     ('github'),
+    ('mysql'),
+    ('rsync'),
     ('slapcat'),
-    ('mysql')
+    ('tar'),
 ])
 def test_load_plugins(input):
     assert input in load_plugins().keys()

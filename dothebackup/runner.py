@@ -1,18 +1,26 @@
 import datetime
+
 import logging
+
 import subprocess
+
 import sys
-import yaml
+
+from typing import Dict, IO, List, Optional
 
 from dothebackup import utils
 from dothebackup.logger import Logger
 from dothebackup.plugins import load_plugins
+from dothebackup.types import ConfigType
+from dothebackup.utils import return_code
+
+import yaml
 
 
 log = logging.getLogger(__name__)
 
 
-def parse_config(configfile):
+def parse_config(configfile: IO) -> Dict:
     """Read config file.
 
     :param configfile: YAML config file
@@ -23,7 +31,7 @@ def parse_config(configfile):
     return yaml.load(configfile)
 
 
-def check_config_keys(config, key_list):
+def check_config_keys(config: ConfigType, key_list: List) -> None:
     """Aborts if keys are not set in config.
 
     :param config: Config
@@ -37,7 +45,7 @@ def check_config_keys(config, key_list):
             sys.exit(1)
 
 
-def check_plugin(name):
+def check_plugin(name: str) -> None:
     """Aborts and throw an error if plugin is not there as defined as type
     in config.
 
@@ -49,15 +57,15 @@ def check_plugin(name):
         sys.exit(1)
 
 
-def builder(config, name):
+def builder(
+        config: Dict[str, Dict[str, Dict]],
+        name: Optional[str]
+) -> Dict[str, List[List[str]]]:
     """Builds a dict of commands.
 
     :param config: YAML config
     :param name: Name of a specific job to run
-    :type config: str
-    :type name: str
     :returns: A dict with all commands needed commands
-    :rtype: dict
     """
     commands = {}
     today = utils.today()
@@ -102,11 +110,10 @@ def builder(config, name):
     return commands
 
 
-def print_commands(commands):
+def print_commands(commands: Dict[str, List[List[str]]]) -> None:
     """Prints the commands that would be used.
 
     :param commands: Command dictionary
-    :type commands: dict
     """
     for item in commands.items():
         print(item[0])
@@ -118,7 +125,12 @@ def print_commands(commands):
         print('\n')
 
 
-def run_commands(commands, test, log_dir, log_keep):
+def run_commands(
+        commands: Dict[str, List[List[str]]],
+        test: bool,
+        log_dir: str,
+        log_keep: int
+) -> None:
     """Running the commands.
 
     The actual runner. It will take the commands dictionary and run it one
@@ -129,10 +141,6 @@ def run_commands(commands, test, log_dir, log_keep):
     :param test: If test the commands only will be printed
     :param log_dir: Dictionary for logfiles
     :param log_keep: How many logs to keep from one job
-    :type commands: dict
-    :type test: bool
-    :type log_dir: str
-    :type log_keep: int
     """
     # in test mode it will print all the commands it would run for
     # each item in the config
@@ -164,10 +172,10 @@ def run_commands(commands, test, log_dir, log_keep):
 
             # run through commands
             starting_time = datetime.datetime.now()
-            for command in command_list:
+            for command_item in command_list:
 
                 # create process
-                command = ' '.join(command)
+                command = ' '.join(command_item)
                 log.debug('command: {}'.format(command))
                 proc = subprocess.Popen(
                     command,
@@ -175,7 +183,7 @@ def run_commands(commands, test, log_dir, log_keep):
                     stderr=subprocess.STDOUT,
                     shell=True
                 )
-                log.debug('done with command')
+                log.debug('run command')
 
                 # write logfile
                 log.debug('write to logfile')
@@ -184,18 +192,17 @@ def run_commands(commands, test, log_dir, log_keep):
                         logfile.write(line.decode('utf-8', 'replace'))
 
                     proc.wait()
+
                 log.debug('done writing logfile')
+                log.debug('done with command')
 
                 # store returncode
                 returncode = proc.returncode
                 log.debug('returncode: {}'.format(returncode))
                 return_codes.append(returncode)
 
-            # write exit code
-            code = 0
-            for exitcode in return_codes:
-                if exitcode != 0:
-                    code = 1
+            # get exit code
+            code = return_code(return_codes)
             log.debug('exitcode: {}'.format(code))
 
             log.debug('write metadata')
@@ -217,7 +224,7 @@ def run_commands(commands, test, log_dir, log_keep):
             log.info('done with item {}'.format(name))
 
 
-def get_started(configfile, name, test):
+def get_started(configfile: IO, name: str, test: bool) -> None:
     """The entrypoint for the UI.
 
     This is used to get everything started up. It will read the config,
@@ -226,9 +233,6 @@ def get_started(configfile, name, test):
     :param configfile: The config file
     :param name: A name of a specific job
     :param test: Switch for only printing the commands
-    :type configfile: _io.TextIOWrapper
-    :type name: str
-    :type test: bool
     """
     log.info('dothebackup starting')
 

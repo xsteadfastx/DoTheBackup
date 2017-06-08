@@ -1,5 +1,8 @@
-import click
 import logging
+
+from typing import IO
+
+import click
 
 from dothebackup.runner import get_started
 
@@ -18,7 +21,7 @@ from dothebackup.runner import get_started
     help='Debug or verbose messages.'
 )
 @click.version_option()
-def main(configfile, name, test, debug):
+def main(configfile: IO, name: str, test: bool, debug: str) -> None:
     """Commandline interface.
     """
     if debug:

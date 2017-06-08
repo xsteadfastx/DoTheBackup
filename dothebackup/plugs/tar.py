@@ -2,6 +2,7 @@ import logging
 import os
 
 from dothebackup import plugins
+from dothebackup.types import CommandListType, ConfigType
 from dothebackup.utils import absolutenormpath
 
 
@@ -10,13 +11,11 @@ log = logging.getLogger(__name__)
 
 @plugins.required_executables(['tar'])
 @plugins.required_keys(['source', 'destination'])
-def main(config):
+def main(config: ConfigType) -> CommandListType:
     """Command builder.
 
     :param config: config snippet for this plugin
-    :type config: dict
     :returns: Commands to create the backup
-    :rtype: list
     """
     command = ['tar', '-vcp']
 
