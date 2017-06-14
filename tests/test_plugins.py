@@ -1,6 +1,6 @@
-import pytest
-
 from dothebackup.plugins import load_plugins
+
+import pytest
 
 
 once_input = {

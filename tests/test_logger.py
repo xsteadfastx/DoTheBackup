@@ -1,7 +1,8 @@
 import os
-import pytest
 
 from dothebackup.logger import Logger
+
+import pytest
 
 
 @pytest.mark.parametrize('logfiles,expected', [

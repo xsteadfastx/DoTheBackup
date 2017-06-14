@@ -1,6 +1,6 @@
-import pytest
-
 from dothebackup import runner
+
+import pytest
 
 
 def test_check_config_keys_abort(capsys):

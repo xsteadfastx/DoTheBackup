@@ -1,6 +1,6 @@
-import pytest
-
 from dothebackup import utils
+
+import pytest
 
 
 @pytest.mark.parametrize('input,expected', [
