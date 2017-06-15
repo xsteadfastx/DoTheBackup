@@ -147,51 +147,73 @@ def config_link_dest(temp_dir):
 # TESTS
 # -----
 def test_mode_once(fake_data):
-    # write test config
-    fake_data.join('test.yml').write(yaml.dump(config_once(str(fake_data))))
 
-    # run it
-    with open(str(fake_data.join('test.yml')), 'r') as f:
-        runner.get_started(f, name=None, test=False)
+    with pytest.raises(SystemExit) as excinfo:
 
-    # check filelist
-    source_filelist = os.listdir(os.path.join(str(fake_data), 'source'))
-    destination_filelist = os.listdir(
-        os.path.join(str(fake_data), 'destination'))
+        # write test config
+        fake_data.join('test.yml').write(
+            yaml.dump(
+                config_once(str(fake_data))
+            )
+        )
 
-    assert source_filelist == destination_filelist
+        # run it
+        with open(str(fake_data.join('test.yml')), 'r') as f:
+            runner.get_started(f, name=None, test=False)
+
+        # check filelist
+        source_filelist = os.listdir(os.path.join(str(fake_data), 'source'))
+        destination_filelist = os.listdir(
+            os.path.join(str(fake_data), 'destination'))
+
+        assert source_filelist == destination_filelist
+
+    assert str(excinfo.value) == '0'
 
 
 def test_mode_month(fake_data):
-    # write test config
-    fake_data.join('test.yml').write(
-        yaml.dump(config_link_dest(str(fake_data))))
 
-    with open(str(fake_data.join('test.yml')), 'r') as f:
-        # run for the first time
-        runner.get_started(f, name=None, test=False)
+    with pytest.raises(SystemExit) as excinfo:
 
-    # move the today dir to yesterday dir
-    shutil.move(str(fake_data.join('destination', today_day_of_month)),
-                str(fake_data.join('destination', yesterday_day_of_month)))
+        # write test config
+        fake_data.join('test.yml').write(
+            yaml.dump(config_link_dest(str(fake_data))))
 
-    with open(str(fake_data.join('test.yml')), 'r') as f:
-        # run backup again
-        runner.get_started(f, name=None, test=False)
+        with open(str(fake_data.join('test.yml')), 'r') as f:
+            # run for the first time
+            runner.get_started(f, name=None, test=False)
 
-    # today inode list
-    today_dir = str(fake_data.join('destination', today_day_of_month))
-    today_filelist = [os.path.join(today_dir, i)
-                      for i in os.listdir(today_dir)]
-    today_inodes = helper.inode_list(today_filelist)
+        # move the today dir to yesterday dir
+        shutil.move(
+            str(fake_data.join('destination', today_day_of_month)),
+            str(fake_data.join('destination', yesterday_day_of_month))
+        )
 
-    # yesterday inode list
-    yesterday_dir = str(fake_data.join('destination', yesterday_day_of_month))
-    yesterday_filelist = [os.path.join(yesterday_dir, i)
-                          for i in os.listdir(yesterday_dir)]
-    yesterday_inodes = helper.inode_list(yesterday_filelist)
+        with open(str(fake_data.join('test.yml')), 'r') as f:
+            # run backup again
+            runner.get_started(f, name=None, test=False)
 
-    assert today_inodes == yesterday_inodes
+        # today inode list
+        today_dir = str(fake_data.join('destination', today_day_of_month))
+        today_filelist = [os.path.join(today_dir, i)
+                          for i in os.listdir(today_dir)]
+        today_inodes = helper.inode_list(today_filelist)
+
+        # yesterday inode list
+        yesterday_dir = str(
+            fake_data.join('destination', yesterday_day_of_month)
+        )
+
+        yesterday_filelist = [
+            os.path.join(yesterday_dir, i)
+            for i in os.listdir(yesterday_dir)
+        ]
+
+        yesterday_inodes = helper.inode_list(yesterday_filelist)
+
+        assert today_inodes == yesterday_inodes
+
+    assert str(excinfo.value) == '0'
 
 
 @pytest.mark.parametrize('input,expected', [

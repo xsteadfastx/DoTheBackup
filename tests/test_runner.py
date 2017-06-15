@@ -36,7 +36,7 @@ def test_check_plugin_abort(capsys):
     ({'test': [['rsync', '-av', '--delete', '/foo/bar/', '/bumm/zack']]},
      'test\n----\n\n  * rsync -av --delete /foo/bar/ /bumm/zack\n\n\n')
 ])
-def test_runner_test(input, expected, capsys):
+def test_run_commands_test(input, expected, capsys):
     runner.run_commands(input, test=True, log_dir='/foo/bar', log_keep=10)
 
     out, err = capsys.readouterr()

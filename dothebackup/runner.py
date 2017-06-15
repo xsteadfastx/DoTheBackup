@@ -148,6 +148,9 @@ def run_commands(
         print_commands(commands)
 
     else:
+        # list to store all return codes of all sub commands
+        all_return_codes = []  # type: List[int]
+
         for item in commands.items():
             log.debug('item: {}'.format(item))
             name, command_list = item
@@ -203,6 +206,10 @@ def run_commands(
 
             # get exit code
             code = return_code(return_codes)
+
+            # store it in the return code list for all sub commands
+            all_return_codes.append(code)
+
             log.debug('exitcode: {}'.format(code))
 
             log.debug('write metadata')
@@ -219,9 +226,13 @@ def run_commands(
                 )
 
                 logfile.write('Exit code: {}\n'.format(code))
+
             log.debug('metadata done')
 
             log.info('done with item {}'.format(name))
+
+        # get overall return code and exit with it
+        sys.exit(return_code(all_return_codes))
 
 
 def get_started(configfile: IO, name: str, test: bool) -> None:
