@@ -43,10 +43,11 @@ Here's an example::
         destination: /media/backup/my_borg_backup_repo
         exclude:
             - /home/user/Downloads
-        keep:
-            daily: 7
-            weekly: 4
-            monthly: 6
+        keep:  # Backups to keep
+            daily: 7  # last 7 days
+            weekly: 4  # last 4 weeks
+            monthly: 6  # last 6 months
+        check: yes  # runs check command after each run on the repo
 
 It's also possible to use a remote destination::
 

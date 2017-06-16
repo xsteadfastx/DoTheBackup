@@ -63,4 +63,8 @@ def main(config: ConfigType) -> CommandListType:
 
         commands.append(prune_command)
 
+    # check
+    if 'check' in config.keys() and config['check']:
+        commands.append(['borg', 'check', config['destination']])
+
     return commands

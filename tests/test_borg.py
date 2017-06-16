@@ -102,6 +102,60 @@ def borg_found(monkeypatch):
             ]
         ]
     ),
+    (
+        {
+            'type': 'borg',
+            'source': [
+                '/etc',
+            ],
+            'destination': '/media/backup/foo',
+            'exclude': [
+                '/home/user/Downloads'
+            ],
+            'check': True,
+        },
+        [
+            [
+                'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+                'borg', 'create', '-v', '--stats',
+                '{}::{}'.format(
+                    '/media/backup/foo',
+                    pendulum.now().format('%Y-%m-%d-%H-%M')
+                ),
+                '/etc',
+                '--exclude /home/user/Downloads'
+            ],
+            [
+                'borg', 'check', '/media/backup/foo'
+            ]
+        ]
+    ),
+    (
+        {
+            'type': 'borg',
+            'source': [
+                '/etc',
+            ],
+            'destination': '/media/backup/foo',
+            'exclude': [
+                '/home/user/Downloads'
+            ],
+            'check': False,
+        },
+        [
+            [
+                'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+                'borg', 'create', '-v', '--stats',
+                '{}::{}'.format(
+                    '/media/backup/foo',
+                    pendulum.now().format('%Y-%m-%d-%H-%M')
+                ),
+                '/etc',
+                '--exclude /home/user/Downloads'
+            ],
+        ]
+    )
+
 ])
 def test_main(config, expected, borg_found, plugins):
     assert plugins['borg'](config) == expected
