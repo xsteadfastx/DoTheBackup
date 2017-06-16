@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+v1.1.1 (2017-06-16)
+-------------------
+
+Fix
+~~~
+- Add typing as dependency. [Marvin Steadfast]
+
+
 v1.1.0 (2017-06-16)
 -------------------
 - Print stdout from commands in debug more. [Marvin Steadfast]
