@@ -16,7 +16,7 @@ def main():
 
     setup(
         name='dothebackup',
-        version='1.0.2',
+        version='1.1.0',
         description='backup tool with plugins',
         author='Marvin Steadfast',
         author_email='marvin@xsteadfastx.org',

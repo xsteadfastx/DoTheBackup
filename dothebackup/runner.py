@@ -192,7 +192,9 @@ def run_commands(
                 log.debug('write to logfile')
                 with logger.logfile() as logfile:
                     for line in proc.stdout:
-                        logfile.write(line.decode('utf-8', 'replace'))
+                        dec_line = line.decode('utf-8', 'replace')
+                        log.debug(dec_line)
+                        logfile.write(dec_line)
 
                     proc.wait()
 
