@@ -34,6 +34,7 @@ def main():
             'pendulum>=1.2.0',
             'pyyaml>=3',
             'requests>=2.0.0',
+            'typing>=3.6.0',
         ],
         entry_points={
             'console_scripts': [
