@@ -56,5 +56,5 @@ It's also possible to use a remote destination::
 API
 ---
 
-.. automodule:: dothebackup.plugs.git
+.. automodule:: dothebackup.plugs.borg
      :members:
