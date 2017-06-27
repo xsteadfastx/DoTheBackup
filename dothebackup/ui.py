@@ -24,6 +24,8 @@ from dothebackup.runner import get_started
 def main(configfile: IO, name: str, test: bool, debug: str) -> None:
     """Commandline interface.
     """
+    logging.basicConfig()
+
     if debug:
 
         if debug == 'debug':
@@ -31,6 +33,6 @@ def main(configfile: IO, name: str, test: bool, debug: str) -> None:
         elif debug == 'info':
             level = logging.INFO
 
-        logging.basicConfig(level=level)
+        logging.getLogger().setLevel(level)
 
     get_started(configfile, name=name, test=test)

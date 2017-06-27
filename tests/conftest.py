@@ -2,8 +2,6 @@ from dothebackup.plugins import load_plugins
 
 import pytest
 
-import yaml
-
 
 @pytest.fixture
 def plugins():
@@ -60,30 +58,3 @@ def nothing_to_commit(monkeypatch):
         'dothebackup.utils.subprocess.check_output',
         lambda path, shell: b''
     )
-
-
-@pytest.fixture
-def config(tmpdir):
-    config = {
-        'logs': {
-            'dir': tmpdir.mkdir('logs').strpath,
-            'keep': 1
-        },
-        'backup': {
-            'testing': {
-                'enabled': True,
-                'type': 'rsync',
-                'mode': 'once',
-                'source': '/foo/bar',
-                'destination': '/backup/foo'
-            }
-        }
-    }
-
-    # write config
-    config_file = tmpdir.join('config.yaml')
-    config_file.write(
-        yaml.dump(config, default_flow_style=False)
-    )
-
-    return config_file.strpath
