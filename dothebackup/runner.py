@@ -78,7 +78,7 @@ def builder(
 
             if 'enabled' not in sequence.keys():
                 print('ERROR: "enabled" is missing in the config.')
-                sys.exit()
+                sys.exit(1)
 
             if not sequence['enabled']:
                 log.info('skipping {}'.format(scalar))

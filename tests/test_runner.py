@@ -1,3 +1,7 @@
+import sys
+
+from unittest.mock import patch
+
 from dothebackup import runner
 
 import pytest
@@ -15,10 +19,12 @@ def test_check_config_keys_abort(capsys):
         }
     }
 
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as excinfo:
         runner.check_config_keys(config, ['log_dir', 'backup'])
 
     out, err = capsys.readouterr()
+
+    assert str(excinfo.value) == '1'
 
     assert out == 'ERROR: "log_dir" is missing in the config.\n'
 
@@ -45,22 +51,51 @@ def test_run_commands_test(input, expected, capsys):
 
 
 def test_enabled_missing_in_builder(capsys):
-    with pytest.raises(SystemExit):
-        runner.builder({
-            'log_dir': '/logs',
-            'backup': {
-                'test': {
-                    'type': 'rsync',
-                    'mode': 'once',
-                    'source': '/source',
-                    'destination': '/destination'
+    with pytest.raises(SystemExit) as excinfo:
+        runner.builder(
+            {
+                'log_dir': '/logs',
+                'backup': {
+                    'test': {
+                        'type': 'rsync',
+                        'mode': 'once',
+                        'source': '/source',
+                        'destination': '/destination'
+                    }
                 }
-            }
-        }, name=None)
+            },
+            name=None
+        )
 
     out, err = capsys.readouterr()
 
+    assert str(excinfo.value) == '1'
+
     assert out == 'ERROR: "enabled" is missing in the config.\n'
+
+
+@patch('dothebackup.runner.sys.exit')
+def test_enabled_missing_in_builder_exit_code(mock_sys):
+    mock_sys.side_effect = SystemExit
+
+    with pytest.raises(SystemExit):
+
+        runner.builder(
+            {
+                    'log_dir': '/logs',
+                    'backup': {
+                        'test': {
+                            'type': 'rsync',
+                            'mode': 'once',
+                            'source': '/source',
+                            'destination': '/destination'
+                        }
+                    }
+            },
+            name=None
+        )
+
+    mock_sys.assert_called_with(1)
 
 
 def test_builder_name():
