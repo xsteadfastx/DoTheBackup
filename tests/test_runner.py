@@ -1,5 +1,3 @@
-import sys
-
 from unittest.mock import patch
 
 from dothebackup import runner
@@ -191,3 +189,24 @@ def test_builder_date(input, expected, today_is_00):
 def test_builder_date_skipping(input, expected, capsys, today_is_00):
     '''Testing stdout print on skipping date.'''
     assert runner.builder(input, name=None) == expected
+
+
+@patch('dothebackup.runner.log.info')
+def test_builder_not_enabled(mock_log):
+    runner.builder(
+        {
+                'log_dir': '/logs',
+                'backup': {
+                    'test': {
+                        'type': 'rsync',
+                        'mode': 'once',
+                        'enabled': False,
+                        'source': '/source',
+                        'destination': '/destination'
+                    }
+                }
+        },
+        name=None
+    )
+
+    mock_log.assert_called_with('skipping test')

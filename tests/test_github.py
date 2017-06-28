@@ -1,9 +1,13 @@
 import json
 
+from unittest.mock import patch
+
+from dothebackup.plugs import github
+
 import pytest
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def get_repos(monkeypatch):
     with open('tests/data/github_repos.txt') as f:
         repos = json.loads(f.read())
@@ -20,7 +24,7 @@ def git_executable(monkeypatch):
         lambda x: '/usr/bin/git')
 
 
-def test_main_not_cloned_yet(plugins):
+def test_main_not_cloned_yet(plugins, get_repos):
     config = {
         'type': 'github',
         'destination': '/foo/bar',
@@ -37,3 +41,12 @@ def test_main_not_cloned_yet(plugins):
     ]
 
     assert plugins['github'](config) == expected
+
+
+@patch('dothebackup.plugs.github.requests', autospec=True)
+def test_get_repos(mock_requests):
+    github.get_repos('xsteadfastx')
+
+    mock_requests.get.assert_called_with(
+        'https://api.github.com/users/xsteadfastx/repos'
+    )
