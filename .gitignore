@@ -45,3 +45,7 @@ DoTheBackup.yaml
 DoTheBackup-cron.sh
 .cache
 docs/_build
+.mypy_cache
+config.yml
+config.yaml
+*.log*
