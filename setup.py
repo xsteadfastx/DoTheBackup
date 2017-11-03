@@ -24,6 +24,7 @@ def main():
         license='MIT',
         platforms='ALL',
         long_description=_read('README.rst'),
+        package_dir={'': 'src'},
         packages=[
             'dothebackup',
             'dothebackup.plugs'

@@ -5,7 +5,6 @@ from dothebackup import plugins
 from dothebackup.types import CommandListType, ConfigType
 from dothebackup.utils import absolutenormpath
 
-
 log = logging.getLogger(__name__)
 
 

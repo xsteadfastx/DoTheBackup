@@ -9,7 +9,7 @@ name = "pypi"
 
 click = "*"
 pendulum = "*"
-pyyaml = "*"
+PyYAML = "*"
 requests = "*"
 typing = "*"
 
@@ -17,10 +17,11 @@ typing = "*"
 [dev-packages]
 
 pytest = "*"
-pytest-cov = "*"
 tox = "*"
 "flake8" = "*"
 mypy = "*"
 pylint = "*"
 "flake8-import-order" = "*"
 isort = "*"
+pytest-sugar = "*"
+coverage = "*"

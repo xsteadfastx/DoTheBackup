@@ -1,8 +1,8 @@
 from unittest.mock import patch
 
-from dothebackup import runner
-
 import pytest
+
+from dothebackup import runner
 
 
 def test_check_config_keys_abort(capsys):

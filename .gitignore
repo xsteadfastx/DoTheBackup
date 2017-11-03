@@ -28,6 +28,7 @@ coverage.xml
 .tox
 nosetests.xml
 junit*.xml
+.coverage.*
 
 # Translations
 *.mo

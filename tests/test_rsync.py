@@ -1,17 +1,12 @@
 import os
-
 import shutil
 
-from dothebackup import runner
-
-import helper
-
 import pendulum
-
 import pytest
-
 import yaml
 
+import helper
+from dothebackup import runner
 
 # GLOBAL VARIABLES
 # ----------------

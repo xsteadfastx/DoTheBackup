@@ -1,21 +1,16 @@
 import datetime
-
 import logging
-
 import subprocess
-
 import sys
+from typing import IO, Dict, List, Optional
 
-from typing import Dict, IO, List, Optional
+import yaml
 
 from dothebackup import utils
 from dothebackup.logger import Logger
 from dothebackup.plugins import load_plugins
 from dothebackup.types import ConfigType
 from dothebackup.utils import return_code
-
-import yaml
-
 
 log = logging.getLogger(__name__)
 

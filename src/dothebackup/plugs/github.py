@@ -1,14 +1,11 @@
 import logging
-
 import os
-
 from typing import Dict, List, Union
-
-from dothebackup import plugins, utils
-from dothebackup.types import CommandListType, ConfigType
 
 import requests
 
+from dothebackup import plugins, utils
+from dothebackup.types import CommandListType, ConfigType
 
 log = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
-from dothebackup.plugins import load_plugins
-
 import pytest
+
+from dothebackup.plugins import load_plugins
 
 
 @pytest.fixture

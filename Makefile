@@ -25,4 +25,8 @@ pypi:
 	twine upload dist/*
 
 test:
-	tox
+	pipenv run tox
+
+isort:
+	pipenv run isort -rc src/
+	pipenv run isort -rc tests/

@@ -1,7 +1,6 @@
-from dothebackup.plugins import load_plugins
-
 import pytest
 
+from dothebackup.plugins import load_plugins
 
 once_input = {
     'type': 'rsync',

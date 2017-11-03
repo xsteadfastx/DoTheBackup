@@ -1,14 +1,11 @@
 import logging
-
 from unittest.mock import patch
 
+import pytest
+import yaml
 from click.testing import CliRunner
 
 from dothebackup import ui
-
-import pytest
-
-import yaml
 
 
 @pytest.mark.parametrize('config,args,expected_log_level,expected_cmds', [

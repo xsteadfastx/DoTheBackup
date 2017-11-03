@@ -3,7 +3,6 @@ import logging
 from dothebackup import plugins, utils
 from dothebackup.types import CommandListType, ConfigType
 
-
 log = logging.getLogger(__name__)
 
 

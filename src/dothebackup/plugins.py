@@ -1,18 +1,11 @@
 import logging
-
 import os
-
 import sys
-
 from distutils import spawn
-
 from functools import wraps
-
 from typing import Callable, Dict, List, Union
 
-
 from dothebackup.types import ConfigType
-
 
 log = logging.getLogger(__name__)
 

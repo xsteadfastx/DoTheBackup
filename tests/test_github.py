@@ -1,10 +1,9 @@
 import json
-
 from unittest.mock import patch
 
-from dothebackup.plugs import github
-
 import pytest
+
+from dothebackup.plugs import github
 
 
 @pytest.fixture

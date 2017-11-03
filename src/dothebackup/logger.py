@@ -1,11 +1,7 @@
 import logging
-
 import os
-
 from contextlib import contextmanager
-
 from typing import IO, Iterator, List
-
 
 debuglog = logging.getLogger(__name__)
 
