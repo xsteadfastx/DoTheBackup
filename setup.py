@@ -11,8 +11,8 @@ def _read(fn):
 
 
 def main():
-    if sys.version_info[:2] < (3, 3):
-        sys.exit('dothebackup currently requires Python 3.3+')
+    if sys.version_info[:2] < (3, 4):
+        sys.exit('dothebackup currently requires Python 3.4+')
 
     setup(
         name='dothebackup',
@@ -43,7 +43,6 @@ def main():
         },
         classifiers=[
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.3',
             'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3 :: Only',
