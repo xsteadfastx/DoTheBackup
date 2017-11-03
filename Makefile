@@ -1,4 +1,7 @@
-.PHONY: build changelog clean editable pypi test
+.PHONY: init build changelog clean editable pypi test
+
+init:
+	pipenv install --python 3.6.3 --dev
 
 build:
 	python setup.py sdist bdist_wheel

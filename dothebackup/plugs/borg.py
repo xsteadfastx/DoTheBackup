@@ -1,10 +1,10 @@
 import logging
-
-from dothebackup import plugins
-from dothebackup.types import CommandListType, ConfigType
+from typing import List  # noqa: F401
 
 import pendulum
 
+from dothebackup import plugins
+from dothebackup.types import CommandListType, ConfigType
 
 log = logging.getLogger(__name__)
 
