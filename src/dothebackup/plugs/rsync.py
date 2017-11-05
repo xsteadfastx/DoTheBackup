@@ -2,7 +2,6 @@ import logging
 import os
 
 import pendulum
-
 from dothebackup import plugins
 from dothebackup.types import CommandListType, ConfigType
 

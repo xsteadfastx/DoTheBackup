@@ -5,7 +5,6 @@ import sys
 from typing import IO, Dict, List, Optional
 
 import yaml
-
 from dothebackup import utils
 from dothebackup.logger import Logger
 from dothebackup.plugins import load_plugins

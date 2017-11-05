@@ -2,7 +2,6 @@ import logging
 from typing import IO
 
 import click
-
 from dothebackup.runner import get_started
 
 
@@ -21,7 +20,7 @@ from dothebackup.runner import get_started
 )
 @click.version_option()
 def main(configfile: IO, name: str, test: bool, debug: str) -> None:
-    """Commandline interface.
+    """A small tool to run backups in different ways.
     """
     logging.basicConfig()
 

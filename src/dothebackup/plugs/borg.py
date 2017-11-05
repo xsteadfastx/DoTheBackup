@@ -2,7 +2,6 @@ import logging
 from typing import List  # noqa: F401
 
 import pendulum
-
 from dothebackup import plugins
 from dothebackup.types import CommandListType, ConfigType
 

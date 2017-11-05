@@ -1,5 +1,4 @@
 import pytest
-
 from dothebackup.plugins import load_plugins
 
 

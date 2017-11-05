@@ -3,7 +3,6 @@ import os
 from typing import Dict, List, Union
 
 import requests
-
 from dothebackup import plugins, utils
 from dothebackup.types import CommandListType, ConfigType
 
