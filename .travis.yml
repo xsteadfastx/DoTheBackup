@@ -2,20 +2,23 @@ language: python
 
 matrix:
   include:
+
     # PYTHON VERSIONS
-    - python: "3.4"
+    - python: '3.4'
       env: TOXENV=py34
-    - python: "3.5"
+    - python: '3.5'
       env: TOXENV=py35
-    - python: "3.6"
+    - python: '3.6'
       env: TOXENV=py36
+    - python: '3.6'
 
     # META
-    - python: "3.6"
       env: TOXENV=flake8
-    - python: "3.6"
+    - python: '3.6'
       env: TOXENV=mypy
-    - python: "3.6"
+
+    # BUILD
+    - python: '3.6'
       env: TOXENV=pex
 
 install:
@@ -27,3 +30,12 @@ script: tox -v
 
 after_success:
   - test $TOXENV = "py36" && tox -e codecov
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Jiu3I9GjpN4ykpQlLET2vHluLaZLT0VTytT+Qd3XD6uLOXyuXxnG/N71jAaKhS4JQr99RbXbiyXminULPxDpDvvGW2eRTZ0pYXmdc7DmnBJeG0KABNjqEKtldcotKQsIesCHPRs0Zlc0oWgKo9CrfXYFCF8+1PdfHomvMAhCWGU=
+  file: dist/dothebackup.pex
+  skip_cleanup: true
+  on:
+    tags: true
