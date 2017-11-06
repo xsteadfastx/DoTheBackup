@@ -1,13 +1,15 @@
+"""Plugins."""
+
 import logging
 import os
 import sys
-from distutils import spawn
+from distutils import spawn  # pylint: disable=no-name-in-module
 from functools import wraps
 from typing import Callable, Dict, List, Union
 
-from dothebackup.types import ConfigType
+from dothebackup.types import CONFIGTYPE
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 def load_plugins() -> Dict[str, Callable]:
@@ -21,12 +23,12 @@ def load_plugins() -> Dict[str, Callable]:
     # temp extend sys path
     sys.path.insert(0, path)
 
-    for f in os.listdir(path):
-        fname, ext = os.path.splitext(f)
+    for file in os.listdir(path):
+        fname, ext = os.path.splitext(file)
         if ext == '.py':
             mod = __import__(fname)
             plugins[fname] = mod.main
-            log.debug('added {} plugin'.format(fname))
+            LOG.debug('added %s plugin', fname)
 
     # remove temp sys path
     sys.path.pop(0)
@@ -40,10 +42,11 @@ def required_keys(key_list: List[str]) -> Callable:
     :param key_list: List of keys that needs to be in the config
     :returns: Decorated function
     """
+    # pylint: disable=missing-docstring
     def decorated_function(func: Callable) -> Callable:
 
         @wraps(func)
-        def func_wrapper(config: ConfigType) -> Union[Callable, None]:
+        def func_wrapper(config: CONFIGTYPE) -> Union[Callable, None]:
             for key in key_list:
                 if key not in config.keys():
                     print('ERROR: "{}" not in config.'.format(key))
@@ -62,10 +65,11 @@ def required_executables(dep_list: List[str]) -> Callable:
     :param dep_list: Dependency list
     :returns: Decorated function
     """
+    # pylint: disable=missing-docstring
     def decorated_function(func: Callable) -> Callable:
 
         @wraps(func)
-        def func_wrapper(config: ConfigType) -> Union[Callable, None]:
+        def func_wrapper(config: CONFIGTYPE) -> Union[Callable, None]:
             for dep in dep_list:
                 if not spawn.find_executable(dep):
                     print('ERROR: Please install {}.'.format(dep))

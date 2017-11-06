@@ -1,10 +1,12 @@
+"""MYSQL."""
+
 import logging
 from os import path
 
 from dothebackup import plugins, utils
-from dothebackup.types import CommandListType, ConfigType
+from dothebackup.types import COMMANDLISTTYPE, CONFIGTYPE
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 @plugins.required_executables(['mysqldump', 'git'])
@@ -18,7 +20,7 @@ log = logging.getLogger(__name__)
         'destination'
     ]
 )
-def main(config: ConfigType) -> CommandListType:
+def main(config: CONFIGTYPE) -> COMMANDLISTTYPE:
     """Command builder.
 
     :param config: config snippet for this plugin

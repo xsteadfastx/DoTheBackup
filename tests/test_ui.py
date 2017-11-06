@@ -1,9 +1,13 @@
+# pylint: disable=missing-docstring, too-many-locals, unused-argument
+# pylint: disable=invalid-name, too-many-arguments
+
 import logging
 from unittest.mock import patch
 
 import pytest
 import yaml
 from click.testing import CliRunner
+
 from dothebackup import ui
 
 
@@ -78,15 +82,21 @@ from dothebackup import ui
         }
     ),
 ])
+@patch('dothebackup.runner.pidfile', autospec=True)
+@patch('dothebackup.runner.check_if_already_running')
 @patch('dothebackup.runner.run_commands')
 def test_main(
         mock_run_commands,
+        mock_check_if_already_running,
+        mock_pidfile,
         config,
         args,
         expected_log_level,
         expected_cmds,
         tmpdir
 ):
+    mock_check_if_already_running.return_value = True
+
     # add logdir
     config['logs']['dir'] = tmpdir.mkdir('logs').strpath
 

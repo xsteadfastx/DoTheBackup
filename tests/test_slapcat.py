@@ -1,3 +1,6 @@
+# pylint: disable=invalid-name, missing-docstring, unused-argument
+# pylint: disable=redefined-outer-name, redefined-builtin
+
 import pytest
 
 

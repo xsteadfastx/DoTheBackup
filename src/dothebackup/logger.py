@@ -1,9 +1,11 @@
+"""Logger."""
+
 import logging
 import os
 from contextlib import contextmanager
 from typing import IO, Iterator, List
 
-debuglog = logging.getLogger(__name__)
+DEBUGLOG = logging.getLogger(__name__)
 
 
 class Logger(object):
@@ -62,7 +64,7 @@ class Logger(object):
         for log in old_logs:
 
             if len(log.split('.')) == 3:
-                name, extension, log_number = log.split('.')
+                _, _, log_number = log.split('.')
 
                 number = int(log_number)
 
@@ -105,6 +107,7 @@ class Logger(object):
 
         :yields: Opened logfile
         """
+        # pylint: disable=invalid-name
         f = open('{}.log'.format(os.path.join(self.log_dir, self.name)), 'a')
 
         yield f
@@ -114,8 +117,8 @@ class Logger(object):
     def create_log_dir(self) -> None:
         """Create logdir if its not there.
         """
-        debuglog.debug('log_dir: {}'.format(self.log_dir))
+        DEBUGLOG.debug('log_dir: %s', self.log_dir)
 
         if not os.path.exists(self.log_dir):
-            debuglog.debug('create: {}'.format(self.log_dir))
+            DEBUGLOG.debug('create: %s', self.log_dir)
             os.makedirs(self.log_dir)

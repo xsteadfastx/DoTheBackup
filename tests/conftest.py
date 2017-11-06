@@ -1,4 +1,7 @@
+# pylint: disable=missing-docstring, invalid-name
+
 import pytest
+
 from dothebackup.plugins import load_plugins
 
 

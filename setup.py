@@ -1,3 +1,7 @@
+"""Setup"""
+
+# pylint: disable=missing-docstring, invalid-name
+
 import os
 import sys
 
@@ -16,7 +20,7 @@ def main():
 
     setup(
         name='dothebackup',
-        version='1.1.1',
+        version='2.0.0',
         description='backup tool with plugins',
         author='Marvin Steadfast',
         author_email='marvin@xsteadfastx.org',

@@ -1,11 +1,14 @@
+"""Rsync."""
+
 import logging
 import os
 
 import pendulum
-from dothebackup import plugins
-from dothebackup.types import CommandListType, ConfigType
 
-log = logging.getLogger(__name__)
+from dothebackup import plugins
+from dothebackup.types import COMMANDLISTTYPE, CONFIGTYPE
+
+LOG = logging.getLogger(__name__)
 
 
 def normalize_path(path: str) -> str:
@@ -22,13 +25,12 @@ def normalize_path(path: str) -> str:
 
         return ':'.join(split_path)
 
-    else:
-        return os.path.normpath(path)
+    return os.path.normpath(path)
 
 
 @plugins.required_executables(['rsync'])
 @plugins.required_keys(['source', 'destination', 'mode'])
-def main(config: ConfigType) -> CommandListType:
+def main(config: CONFIGTYPE) -> COMMANDLISTTYPE:
     """Command builder.
 
     :param config: config snippet for this plugin

@@ -1,10 +1,15 @@
+# pylint: disable=missing-docstring, invalid-name, unused-argument
+# pylint: disable=redefined-builtin
+
 import os
 import shutil
+from unittest.mock import patch
 
-import helper
 import pendulum
 import pytest
 import yaml
+
+import helper
 from dothebackup import runner
 
 # GLOBAL VARIABLES
@@ -140,7 +145,10 @@ def config_link_dest(temp_dir):
 
 # TESTS
 # -----
-def test_mode_once(fake_data):
+@patch('dothebackup.runner.pidfile', autospec=True)
+@patch('dothebackup.runner.check_if_already_running')
+def test_mode_once(check_if_already_running_mock, pidfile_mock, fake_data):
+    check_if_already_running_mock.return_value = False
 
     with pytest.raises(SystemExit) as excinfo:
 
@@ -165,7 +173,10 @@ def test_mode_once(fake_data):
     assert str(excinfo.value) == '0'
 
 
-def test_mode_month(fake_data):
+@patch('dothebackup.runner.pidfile', autospec=True)
+@patch('dothebackup.runner.check_if_already_running')
+def test_mode_month(check_if_already_running_mock, pidfile_mock, fake_data):
+    check_if_already_running_mock.return_value = False
 
     with pytest.raises(SystemExit) as excinfo:
 
@@ -189,8 +200,10 @@ def test_mode_month(fake_data):
 
         # today inode list
         today_dir = str(fake_data.join('destination', today_day_of_month))
-        today_filelist = [os.path.join(today_dir, i)
-                          for i in os.listdir(today_dir)]
+        today_filelist = [
+            os.path.join(today_dir, i)
+            for i in os.listdir(today_dir)
+        ]
         today_inodes = helper.inode_list(today_filelist)
 
         # yesterday inode list

@@ -1,6 +1,10 @@
+# pylint: disable=missing-docstring, redefined-builtin, invalid-name
+# pylint: disable=unused-argument, unused-variable
+
 from unittest.mock import patch
 
 import pytest
+
 from dothebackup import runner
 
 
@@ -19,7 +23,7 @@ def test_check_config_keys_abort(capsys):
     with pytest.raises(SystemExit) as excinfo:
         runner.check_config_keys(config, ['log_dir', 'backup'])
 
-    out, err = capsys.readouterr()
+    out, _ = capsys.readouterr()
 
     assert str(excinfo.value) == '1'
 
@@ -30,9 +34,33 @@ def test_check_plugin_abort(capsys):
     with pytest.raises(SystemExit):
         runner.check_plugin('foobar')
 
-    out, err = capsys.readouterr()
+    out, _ = capsys.readouterr()
 
     assert out == 'ERROR: Plugin "foobar" could not be found.\n'
+
+
+@patch('dothebackup.runner.sys')
+@patch('dothebackup.runner.Path')
+def test_check_if_already_running(path_mock, sys_mock):
+    path_mock.return_value.exists.return_value = False
+
+    assert runner.check_if_already_running() is None
+
+    sys_mock.assert_not_called()
+
+
+@patch('dothebackup.runner.Path')
+def test_check_if_already_running_abort(path_mock, capsys):
+    path_mock.return_value.exists.return_value = True
+
+    with pytest.raises(SystemExit) as excinfo:
+        runner.check_if_already_running()
+
+    out, _ = capsys.readouterr()
+
+    assert str(excinfo.value) == '1'
+
+    assert out == 'ERROR: Other DoTheBackup process is running.\n'
 
 
 @pytest.mark.parametrize('input,expected', [
@@ -79,15 +107,15 @@ def test_enabled_missing_in_builder_exit_code(mock_sys):
 
         runner.builder(
             {
-                    'log_dir': '/logs',
-                    'backup': {
-                        'test': {
-                            'type': 'rsync',
-                            'mode': 'once',
-                            'source': '/source',
-                            'destination': '/destination'
-                        }
+                'log_dir': '/logs',
+                'backup': {
+                    'test': {
+                        'type': 'rsync',
+                        'mode': 'once',
+                        'source': '/source',
+                        'destination': '/destination'
                     }
+                }
             },
             name=None
         )
@@ -190,22 +218,22 @@ def test_builder_date_skipping(input, expected, capsys, today_is_00):
     assert runner.builder(input, name=None) == expected
 
 
-@patch('dothebackup.runner.log.info')
+@patch('dothebackup.runner.LOG.info')
 def test_builder_not_enabled(mock_log):
     runner.builder(
         {
-                'log_dir': '/logs',
-                'backup': {
-                    'test': {
-                        'type': 'rsync',
-                        'mode': 'once',
-                        'enabled': False,
-                        'source': '/source',
-                        'destination': '/destination'
-                    }
+            'log_dir': '/logs',
+            'backup': {
+                'test': {
+                    'type': 'rsync',
+                    'mode': 'once',
+                    'enabled': False,
+                    'source': '/source',
+                    'destination': '/destination'
                 }
+            }
         },
         name=None
     )
 
-    mock_log.assert_called_with('skipping test')
+    mock_log.assert_called_with('skipping %s', 'test')

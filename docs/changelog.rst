@@ -2,6 +2,33 @@ Changelog
 =========
 
 
+%%version%% (unreleased)
+------------------------
+
+Fix
+~~~
+- "enabled" missing in config throws exit code 1. [Marvin Steadfast]
+
+Other
+~~~~~
+- Further. [Marvin Steadfast]
+- Further. [Marvin Steadfast]
+- Further. [Marvin Steadfast]
+- Further. [Marvin Steadfast]
+- Further. [Marvin Steadfast]
+- Further. [Marvin Steadfast]
+- Further. [Marvin Steadfast]
+- Further. [Marvin Steadfast]
+- First stuff. [Marvin Steadfast]
+- Moving package to src directory. [Marvin Steadfast]
+- Using pipenv for development environment and testing. [Marvin
+  Steadfast]
+- Python 3.3 no longer supported. [Marvin Steadfast]
+- Raising coverage. [Marvin Steadfast]
+- Testing debug levels of the UI. [Marvin Steadfast]
+- Added test for ui. [Marvin Steadfast]
+
+
 v1.1.1 (2017-06-16)
 -------------------
 

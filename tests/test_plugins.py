@@ -1,4 +1,8 @@
+# pylint: disable=invalid-name, missing-docstring, unused-argument
+# pylint: disable=redefined-outer-name, redefined-builtin
+
 import pytest
+
 from dothebackup.plugins import load_plugins
 
 once_input = {
@@ -22,7 +26,7 @@ def test_required_keys(input, expected, capsys, rsync_found, plugins):
     with pytest.raises(SystemExit):
         plugins['rsync'](input)
 
-    out, err = capsys.readouterr()
+    out, _ = capsys.readouterr()
 
     assert out == expected
 
@@ -31,7 +35,7 @@ def test_required_executables(rsync_not_found, capsys, plugins):
     with pytest.raises(SystemExit):
         plugins['rsync'](once_input)
 
-    out, err = capsys.readouterr()
+    out, _ = capsys.readouterr()
 
     assert out == 'ERROR: Please install rsync.\n'
 

@@ -1,16 +1,18 @@
+"Tar."
+
 import logging
 import os
 
 from dothebackup import plugins
-from dothebackup.types import CommandListType, ConfigType
+from dothebackup.types import COMMANDLISTTYPE, CONFIGTYPE
 from dothebackup.utils import absolutenormpath
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 @plugins.required_executables(['tar'])
 @plugins.required_keys(['source', 'destination'])
-def main(config: ConfigType) -> CommandListType:
+def main(config: CONFIGTYPE) -> COMMANDLISTTYPE:
     """Command builder.
 
     :param config: config snippet for this plugin

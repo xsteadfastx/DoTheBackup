@@ -1,3 +1,6 @@
+# pylint: disable=invalid-name, missing-docstring, unused-argument
+# pylint: disable=redefined-outer-name, redefined-builtin
+
 from __future__ import absolute_import
 
 import pytest

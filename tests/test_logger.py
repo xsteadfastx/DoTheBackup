@@ -1,6 +1,10 @@
+# pylint: disable=invalid-name, missing-docstring, unused-argument
+# pylint: disable=redefined-outer-name
+
 import os
 
 import pytest
+
 from dothebackup.logger import Logger
 
 
@@ -20,6 +24,7 @@ from dothebackup.logger import Logger
     )
 ])
 def test__old_logs(logfiles, expected, tmpdir):
+    # pylint: disable=protected-access
     for logfile in logfiles:
         tmpdir.join(logfile).write('foo')
 
@@ -89,10 +94,10 @@ def test_logfile(tmpdir):
         logfile.write('foo')
 
     with open(
-            os.path.join(
-                log_dir,
-                'foo.log'
-            )
+        os.path.join(
+            log_dir,
+            'foo.log'
+        )
     ) as f:
 
         assert f.read() == 'foo'

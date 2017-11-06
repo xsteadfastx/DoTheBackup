@@ -1,7 +1,10 @@
+"""Ui."""
+
 import logging
 from typing import IO
 
 import click
+
 from dothebackup.runner import get_started
 
 

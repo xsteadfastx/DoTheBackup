@@ -1,10 +1,16 @@
+"""Utils."""
+
 import logging
 import os
 import subprocess
+from contextlib import contextmanager
 from datetime import datetime
-from typing import List
+from pathlib import Path
+from typing import Iterator, List
 
-log = logging.getLogger(__name__)
+from dothebackup.constants import PIDFILE
+
+LOG = logging.getLogger(__name__)
 
 
 def absolutenormpath(path: str) -> str:
@@ -14,7 +20,7 @@ def absolutenormpath(path: str) -> str:
     :returns: Absolute path
     """
     abspath = os.path.abspath(os.path.normpath(path))
-    log.debug('absolute path: {}'.format(abspath))
+    LOG.debug('absolute path: %s', abspath)
 
     return abspath
 
@@ -34,7 +40,7 @@ def git_cloned_yet(path: str) -> bool:
     :returns: If path contains a git repositoy
     """
     is_dir = os.path.isdir(os.path.join(path, '.git'))
-    log.debug('git cloned yes: {}'.format(is_dir))
+    LOG.debug('git cloned yes: %s', is_dir)
 
     return is_dir
 
@@ -48,12 +54,9 @@ def git_something_to_commit(path: str) -> bool:
     command = ['cd', path, '&&', 'git', 'status', '--porcelain']
     stdout = subprocess.check_output(' '.join(command), shell=True)
 
-    if stdout:
-        something_to_commit = True
-    else:
-        something_to_commit = False
+    something_to_commit = bool(stdout)
 
-    log.debug('something to commit: {}'.format(something_to_commit))
+    LOG.debug('something to commit: %s', something_to_commit)
 
     return something_to_commit
 
@@ -70,3 +73,17 @@ def return_code(exitcodes: List[int]) -> int:
             code = 1
 
     return code
+
+
+@contextmanager
+def pidfile() -> Iterator[None]:
+    """Contextmanager to create a Pidfile for the
+    DoTheBackup process and removes it afterwards.
+    """
+    pid = Path(PIDFILE)
+    try:
+        with pid.open(mode='w') as pid_file:
+            pid_file.write(str(os.getpid()))
+        yield
+    finally:
+        pid.unlink()

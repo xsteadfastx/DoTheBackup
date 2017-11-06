@@ -1,16 +1,19 @@
+"""Borg."""
+
 import logging
-from typing import List  # noqa: F401
+from typing import List  # noqa: F401 pylint: disable=unused-import
 
 import pendulum
-from dothebackup import plugins
-from dothebackup.types import CommandListType, ConfigType
 
-log = logging.getLogger(__name__)
+from dothebackup import plugins
+from dothebackup.types import COMMANDLISTTYPE, CONFIGTYPE
+
+LOG = logging.getLogger(__name__)
 
 
 @plugins.required_executables(['borg'])
 @plugins.required_keys(['source', 'destination'])
-def main(config: ConfigType) -> CommandListType:
+def main(config: CONFIGTYPE) -> COMMANDLISTTYPE:
     """Command builder.
 
     :param config: config snippt for this plugin

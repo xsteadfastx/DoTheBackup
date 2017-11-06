@@ -1,17 +1,24 @@
+"""Runner."""
+
+# pylint: disable=too-many-locals
+
 import datetime
 import logging
 import subprocess
 import sys
+from pathlib import Path
 from typing import IO, Dict, List, Optional
 
 import yaml
+
 from dothebackup import utils
+from dothebackup.constants import PIDFILE
 from dothebackup.logger import Logger
 from dothebackup.plugins import load_plugins
-from dothebackup.types import ConfigType
-from dothebackup.utils import return_code
+from dothebackup.types import CONFIGTYPE
+from dothebackup.utils import pidfile, return_code
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 def parse_config(configfile: IO) -> Dict:
@@ -25,7 +32,7 @@ def parse_config(configfile: IO) -> Dict:
     return yaml.load(configfile)
 
 
-def check_config_keys(config: ConfigType, key_list: List) -> None:
+def check_config_keys(config: CONFIGTYPE, key_list: List) -> None:
     """Aborts if keys are not set in config.
 
     :param config: Config
@@ -48,6 +55,13 @@ def check_plugin(name: str) -> None:
     """
     if name not in sys.modules.keys():
         print('ERROR: Plugin "{}" could not be found.'.format(name))
+        sys.exit(1)
+
+
+def check_if_already_running() -> None:
+    """Aborts if other DoTheBackup process is running."""
+    if Path(PIDFILE).exists():
+        print('ERROR: Other DoTheBackup process is running.')
         sys.exit(1)
 
 
@@ -75,14 +89,14 @@ def builder(
                 sys.exit(1)
 
             if not sequence['enabled']:
-                log.info('skipping {}'.format(scalar))
+                LOG.info('skipping %s', scalar)
                 continue
 
             # if days are in config and its not a days defined it will continue
             # the for loop
             if 'days' in sequence.keys():
                 if today not in sequence['days']:
-                    log.info('skipping {}'.format(scalar))
+                    LOG.info('skipping %s', scalar)
                     continue
 
         # if there is a name defined and its not the name of the scalar
@@ -95,7 +109,7 @@ def builder(
 
         # add plugin commands to command dict
         commands[scalar] = plugins[sequence['type']](sequence)
-        log.debug('added command: {}'.format(commands[scalar]))
+        LOG.debug('added command: %s', commands[scalar])
 
     if name and not commands:
         print('ERROR: "{}" could not be found in config.'.format(name))
@@ -111,7 +125,7 @@ def print_commands(commands: Dict[str, List[List[str]]]) -> None:
     """
     for item in commands.items():
         print(item[0])
-        for character in item[0]:
+        for _ in item[0]:
             print('-', end='')
         print('\n')
         for command in item[1]:
@@ -146,10 +160,10 @@ def run_commands(
         all_return_codes = []  # type: List[int]
 
         for item in commands.items():
-            log.debug('item: {}'.format(item))
+            LOG.debug('item: %s', item)
             name, command_list = item
 
-            log.info('started item {}'.format(name))
+            LOG.info('started item %s', name)
 
             # collects the return codes of all sub commands
             return_codes = []
@@ -169,35 +183,36 @@ def run_commands(
 
             # run through commands
             starting_time = datetime.datetime.now()
+
             for command_item in command_list:
 
                 # create process
                 command = ' '.join(command_item)
-                log.debug('command: {}'.format(command))
+                LOG.debug('command: %s', command)
                 proc = subprocess.Popen(
                     command,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     shell=True
                 )
-                log.debug('run command')
+                LOG.debug('run command')
 
                 # write logfile
-                log.debug('write to logfile')
+                LOG.debug('write to logfile')
                 with logger.logfile() as logfile:
                     for line in proc.stdout:
                         dec_line = line.decode('utf-8', 'replace')
-                        log.debug(dec_line)
+                        LOG.debug(dec_line)
                         logfile.write(dec_line)
 
                     proc.wait()
 
-                log.debug('done writing logfile')
-                log.debug('done with command')
+                LOG.debug('done writing logfile')
+                LOG.debug('done with command')
 
                 # store returncode
                 returncode = proc.returncode
-                log.debug('returncode: {}'.format(returncode))
+                LOG.debug('returncode: %s', returncode)
                 return_codes.append(returncode)
 
             # get exit code
@@ -206,14 +221,16 @@ def run_commands(
             # store it in the return code list for all sub commands
             all_return_codes.append(code)
 
-            log.debug('exitcode: {}'.format(code))
+            LOG.debug('exitcode: %s', code)
 
-            log.debug('write metadata')
+            LOG.debug('write metadata')
             with logger.logfile() as logfile:
 
                 finishing_time = datetime.datetime.now()
-                logfile.write('Finished at: {}\n'.format(
-                    finishing_time.strftime("%Y-%m-%d %H:%M"))
+                logfile.write(
+                    'Finished at: {}\n'.format(
+                        finishing_time.strftime("%Y-%m-%d %H:%M")
+                    )
                 )
 
                 logfile.write(
@@ -223,9 +240,9 @@ def run_commands(
 
                 logfile.write('Exit code: {}\n'.format(code))
 
-            log.debug('metadata done')
+            LOG.debug('metadata done')
 
-            log.info('done with item {}'.format(name))
+            LOG.info('done with item %s', name)
 
         # get overall return code and exit with it
         sys.exit(return_code(all_return_codes))
@@ -241,26 +258,31 @@ def get_started(configfile: IO, name: str, test: bool) -> None:
     :param name: A name of a specific job
     :param test: Switch for only printing the commands
     """
-    log.info('dothebackup starting')
+    LOG.info('dothebackup starting')
 
-    # read config
-    log.info('parse config')
-    config = parse_config(configfile)
+    # check if there is a already running dothebackup process
+    check_if_already_running()
 
-    # if backup and log_dir is not in config it will abort
-    log.info('check config')
-    check_config_keys(config, ['backup', 'logs'])
-    check_config_keys(config['logs'], ['dir', 'keep'])
+    with pidfile():
 
-    # get everything started
-    log.info('build commands')
-    commands = builder(config, name=name)
+        # read config
+        LOG.info('parse config')
+        config = parse_config(configfile)
 
-    log.info('run commands')
-    run_commands(
-        commands,
-        test=test,
-        log_dir=config['logs']['dir'],
-        log_keep=config['logs']['keep']
-    )
-    log.info('dothebackup done')
+        # if backup and log_dir is not in config it will abort
+        LOG.info('check config')
+        check_config_keys(config, ['backup', 'logs'])
+        check_config_keys(config['logs'], ['dir', 'keep'])
+
+        # get everything started
+        LOG.info('build commands')
+        commands = builder(config, name=name)
+
+        LOG.info('run commands')
+        run_commands(
+            commands,
+            test=test,
+            log_dir=config['logs']['dir'],
+            log_keep=config['logs']['keep']
+        )
+        LOG.info('dothebackup done')

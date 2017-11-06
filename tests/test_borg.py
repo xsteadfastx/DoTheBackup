@@ -1,3 +1,6 @@
+# pylint: disable=invalid-name, missing-docstring, unused-argument
+# pylint: disable=redefined-outer-name
+
 import pendulum
 import pytest
 
@@ -157,4 +160,5 @@ def borg_found(monkeypatch):
 
 ])
 def test_main(config, expected, borg_found, plugins):
+    # pytest: disable=rededfined-outer-name
     assert plugins['borg'](config) == expected

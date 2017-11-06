@@ -1,12 +1,15 @@
+"""Github."""
+
 import logging
 import os
 from typing import Dict, List, Union
 
 import requests
-from dothebackup import plugins, utils
-from dothebackup.types import CommandListType, ConfigType
 
-log = logging.getLogger(__name__)
+from dothebackup import plugins, utils
+from dothebackup.types import COMMANDLISTTYPE, CONFIGTYPE
+
+LOG = logging.getLogger(__name__)
 
 
 def get_repos(username: str) -> List[Dict[str, Union[int, str, Dict]]]:
@@ -15,9 +18,10 @@ def get_repos(username: str) -> List[Dict[str, Union[int, str, Dict]]]:
     :param username: github username
     :returns: Full JSON dictionary of user repos from github
     """
+    # pylint: disable=invalid-name
     r = requests.get('https://api.github.com/users/{}/repos'.format(username))
 
-    log.info('got repos from github api')
+    LOG.info('got repos from github api')
 
     # a nice python dict
     return r.json()
@@ -25,7 +29,7 @@ def get_repos(username: str) -> List[Dict[str, Union[int, str, Dict]]]:
 
 @plugins.required_executables(['git'])
 @plugins.required_keys(['username', 'destination'])
-def main(config: ConfigType) -> CommandListType:
+def main(config: CONFIGTYPE) -> COMMANDLISTTYPE:
     """Command builder.
 
     :param config: config snippet for this plugin

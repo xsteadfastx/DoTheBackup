@@ -1,15 +1,17 @@
+"""Slapcat."""
+
 import logging
 from os.path import join
 
 from dothebackup import plugins, utils
-from dothebackup.types import CommandListType, ConfigType
+from dothebackup.types import COMMANDLISTTYPE, CONFIGTYPE
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 @plugins.required_executables(['slapcat'])
 @plugins.required_keys(['destination', 'mode'])
-def main(config: ConfigType) -> CommandListType:
+def main(config: CONFIGTYPE) -> COMMANDLISTTYPE:
     """Command builder.
 
     :param config: config snippet for this plugin
