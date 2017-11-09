@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-%%version%% (unreleased)
-------------------------
+v2.0.0 (2017-11-09)
+-------------------
 
 Fix
 ~~~
@@ -11,15 +11,10 @@ Fix
 
 Other
 ~~~~~
-- Further. [Marvin Steadfast]
-- Further. [Marvin Steadfast]
-- Further. [Marvin Steadfast]
-- Further. [Marvin Steadfast]
-- Further. [Marvin Steadfast]
-- Further. [Marvin Steadfast]
-- Further. [Marvin Steadfast]
-- Further. [Marvin Steadfast]
-- First stuff. [Marvin Steadfast]
+- Travis deploy only if $TOXENV is pex. [Marvin Steadfast]
+- Creates a pidfile. [Marvin Steadfast]
+
+  This prevents `dothebackup` from running more then once parallel.
 - Moving package to src directory. [Marvin Steadfast]
 - Using pipenv for development environment and testing. [Marvin
   Steadfast]
