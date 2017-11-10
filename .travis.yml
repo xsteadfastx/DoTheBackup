@@ -1,3 +1,7 @@
+sudo: required
+services:
+  - docker
+
 language: python
 
 matrix:
@@ -21,7 +25,7 @@ matrix:
 
     # BUILD
     - python: '3.6'
-      env: TOXENV=pex
+      env: TOXENV=build-pex
 
 install:
   - travis_retry sudo apt-get update
@@ -41,4 +45,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    condition: $TOXENV = "pex"
+    condition: $TOXENV = "build-pex"
