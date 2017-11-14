@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+v2.1.0 (2017-11-14)
+-------------------
+- Added `BORG_HOSTNAME_IS_UNIQUE=yes` to borg. [Marvin Steadfast]
+
+
 v2.0.0 (2017-11-09)
 -------------------
 
