@@ -26,6 +26,7 @@ def borg_found(monkeypatch):
         [
             [
                 'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+                'BORG_HOSTNAME_IS_UNIQUE=yes',
                 'borg', 'create', '-v', '--stats',
                 '{}::{}'.format(
                     '/media/backup/foo',
@@ -52,6 +53,7 @@ def borg_found(monkeypatch):
         [
             [
                 'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+                'BORG_HOSTNAME_IS_UNIQUE=yes',
                 'borg', 'create', '-v', '--stats',
                 '{}::{}'.format(
                     '/media/backup/foo',
@@ -85,6 +87,7 @@ def borg_found(monkeypatch):
         [
             [
                 'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+                'BORG_HOSTNAME_IS_UNIQUE=yes',
                 'borg', 'create', '-v', '--stats',
                 '{}::{}'.format(
                     '/media/backup/foo',
@@ -119,6 +122,7 @@ def borg_found(monkeypatch):
         [
             [
                 'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+                'BORG_HOSTNAME_IS_UNIQUE=yes',
                 'borg', 'create', '-v', '--stats',
                 '{}::{}'.format(
                     '/media/backup/foo',
@@ -147,6 +151,7 @@ def borg_found(monkeypatch):
         [
             [
                 'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+                'BORG_HOSTNAME_IS_UNIQUE=yes',
                 'borg', 'create', '-v', '--stats',
                 '{}::{}'.format(
                     '/media/backup/foo',

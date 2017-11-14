@@ -41,7 +41,8 @@ deploy:
   provider: releases
   api_key:
     secure: Jiu3I9GjpN4ykpQlLET2vHluLaZLT0VTytT+Qd3XD6uLOXyuXxnG/N71jAaKhS4JQr99RbXbiyXminULPxDpDvvGW2eRTZ0pYXmdc7DmnBJeG0KABNjqEKtldcotKQsIesCHPRs0Zlc0oWgKo9CrfXYFCF8+1PdfHomvMAhCWGU=
-  file: dist/dothebackup.pex
+  file_glob: true
+  file: dist/dothebackup-*.pex
   skip_cleanup: true
   on:
     tags: true

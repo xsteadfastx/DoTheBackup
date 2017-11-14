@@ -25,6 +25,8 @@ def main(config: CONFIGTYPE) -> COMMANDLISTTYPE:
     commands.append(
         [
             'BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes',
+            # removes locks
+            'BORG_HOSTNAME_IS_UNIQUE=yes',
             'borg', 'create', '-v', '--stats',
             '{}::{}'.format(
                 config['destination'],
