@@ -28,7 +28,7 @@ from dothebackup import ui
             }
         },
         None,
-        logging.WARNING,
+        logging.NOTSET,
         {
             'testing': [
                 ['rsync', '-av', '--delete', '/foo/bar/', '/backup/foo']
