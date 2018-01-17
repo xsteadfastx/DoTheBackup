@@ -1,8 +1,13 @@
 FROM xsteadfastx/tox-python
 
 RUN set -ex \
- && pip install pex
+ && pip install \
+        pex \
+        pipenv \
+ && pip3.6 install wheel \
+ && pip3.5 install wheel \
+ && pip3.4 install wheel
 
 WORKDIR /data
 
-CMD pex -e dothebackup.ui:main --python=python3.6 --python=python3.5 --python=python3.4 --python-shebang=/usr/bin/python3 -o dist/dothebackup-`uname -s`-`uname -m`.pex --no-wheel --disable-cache -v .
+CMD tools/build-pex.sh
